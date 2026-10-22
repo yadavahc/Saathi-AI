@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg: #07090d;
+  --panel: #0e131a;
+  --panel-2: #121924;
+  --line: rgba(148, 163, 184, 0.12);
+  --text: #e8edf3;
+  --muted: #8b97a8;
+  --brand: #3fd0a6;
+  --series-1: #3987e5; /* dataviz slot 1 (dark) */
+  --series-2: #d95926; /* dataviz slot 2 (dark) */
+  --good: #22c55e;
+  --warn: #f59e0b;
+  --bad: #f43f5e;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  background-image: radial-gradient(1200px 600px at 10% -10%, rgba(22, 184, 138, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 110% 0%, rgba(245, 158, 11, 0.06), transparent 60%);
+  background-attachment: fixed;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2a3442 transparent;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-2xl border border-white/[0.07] bg-ink-900/80 backdrop-blur;
+  }
+  .panel-head {
+    @apply flex items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3.5;
+  }
+  .label {
+    @apply text-[10.5px] font-semibold uppercase tracking-[0.14em] text-slate-400;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition active:scale-[.98] disabled:opacity-40;
+  }
+  .btn-primary {
+    @apply btn bg-brand-500 text-ink-950 hover:bg-brand-400;
+  }
+  .btn-ghost {
+    @apply btn border border-white/10 bg-white/[0.03] text-slate-200 hover:bg-white/[0.07];
+  }
+  .btn-danger {
+    @apply btn bg-rose-500/90 text-white hover:bg-rose-500;
+  }
+  .table-row {
+    @apply border-b border-white/[0.05] last:border-0;
+  }
+}
+
+.flow-line {
+  background: linear-gradient(90deg, transparent, rgba(63, 208, 166, 0.9), transparent);
+  background-size: 200% 100%;
+  animation: flow 1.6s linear infinite;
+}
+
+@keyframes flow {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

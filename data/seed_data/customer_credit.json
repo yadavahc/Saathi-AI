@@ -1,0 +1,35 @@
+[
+  {
+    "customer_id": "CUS-01",
+    "merchant_id": "MER-001",
+    "name": "Ramesh",
+    "phone": "+91-97400-XXXXX",
+    "outstanding": 4500,
+    "overdue_days": 7,
+    "last_purchase_days_ago": 9,
+    "status": "OVERDUE",
+    "reminders_sent": 0
+  },
+  {
+    "customer_id": "CUS-02",
+    "merchant_id": "MER-001",
+    "name": "Suresh",
+    "phone": "+91-96320-XXXXX",
+    "outstanding": 2500,
+    "overdue_days": 3,
+    "last_purchase_days_ago": 5,
+    "status": "OVERDUE",
+    "reminders_sent": 0
+  },
+  {
+    "customer_id": "CUS-03",
+    "merchant_id": "MER-001",
+    "name": "Meena",
+    "phone": "+91-90080-XXXXX",
+    "outstanding": 1500,
+    "overdue_days": 0,
+    "last_purchase_days_ago": 2,
+    "status": "CURRENT",
+    "reminders_sent": 0
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "user_id": "U001",
+    "name": "Rahul",
+    "phone": "+91-98450-XXXXX",
+    "language": "kn-IN",
+    "role": "consumer",
+    "city": "Bengaluru"
+  },
+  {
+    "user_id": "M001",
+    "name": "Lakshmi",
+    "phone": "+91-99000-XXXXX",
+    "language": "kn-IN",
+    "role": "merchant",
+    "merchant_id": "MER-001",
+    "city": "Mysuru"
+  }
+]

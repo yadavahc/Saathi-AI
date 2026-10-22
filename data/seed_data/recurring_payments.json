@@ -1,0 +1,35 @@
+[
+  {
+    "rp_id": "RP-01",
+    "user_id": "U001",
+    "name": "Home broadband + OTT bundle (annual)",
+    "amount": 8999,
+    "due_in_days": 6,
+    "mandate": "UPI AutoPay",
+    "category": "subscription",
+    "past_failures": 0,
+    "status": "ACTIVE"
+  },
+  {
+    "rp_id": "RP-02",
+    "user_id": "U001",
+    "name": "Health insurance premium",
+    "amount": 2450,
+    "due_in_days": 12,
+    "mandate": "UPI AutoPay",
+    "category": "insurance",
+    "past_failures": 0,
+    "status": "ACTIVE"
+  },
+  {
+    "rp_id": "RP-03",
+    "user_id": "U001",
+    "name": "Two-wheeler EMI",
+    "amount": 8000,
+    "due_in_days": 15,
+    "mandate": "NACH",
+    "category": "emi",
+    "past_failures": 0,
+    "status": "ACTIVE"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "user_id": "U001",
+    "savings_balance": 32000,
+    "current_balance": 5200,
+    "monthly_income": 28000,
+    "salary_in_days": 9,
+    "insurance_policy": "Star Health Family Floater",
+    "insurance_policy_no": "SH-PL-77812",
+    "insurance_coverage": 60000,
+    "insurance_covers": [
+      "hospitalisation",
+      "surgery",
+      "medical emergency"
+    ],
+    "monthly_emi": 8000,
+    "emi_in_days": 15,
+    "preapproved_loan": 50000,
+    "loan_rate_pct": 11.5,
+    "emergency_buffer": 8000
+  }
+]

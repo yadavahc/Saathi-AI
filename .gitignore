@@ -1,0 +1,21 @@
+# secrets
+.env
+*.service-account.json
+credentials/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+backend/.venv/
+
+# node
+node_modules/
+.next/
+frontend/.next/
+out/
+
+# misc
+.DS_Store
+*.log
+*.tsbuildinfo

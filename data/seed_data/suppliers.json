@@ -1,0 +1,28 @@
+[
+  {
+    "supplier_id": "SUP-ABC",
+    "name": "ABC Stores (Wholesale)",
+    "contact": "Manjunath",
+    "items": [
+      "rice",
+      "sugar",
+      "dal",
+      "oil"
+    ],
+    "delivery": "Tomorrow",
+    "rating": 4.7,
+    "channel": "telegram"
+  },
+  {
+    "supplier_id": "SUP-FRESH",
+    "name": "Fresh Dairy & Tea Co.",
+    "contact": "Farah",
+    "items": [
+      "milk",
+      "tea"
+    ],
+    "delivery": "Today",
+    "rating": 4.5,
+    "channel": "telegram"
+  }
+]

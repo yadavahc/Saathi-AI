@@ -1,0 +1,16 @@
+[
+  {
+    "campaign_id": "CMP-480",
+    "merchant_id": "MER-001",
+    "name": "Ugadi Festival Basket",
+    "offer": "5% off on 5 KG rice + dal",
+    "price": null,
+    "window": "All day",
+    "status": "COMPLETED",
+    "channel": "telegram",
+    "before_daily": 13100,
+    "after_daily": 14600,
+    "improvement_pct": 11.5,
+    "simulated": true
+  }
+]

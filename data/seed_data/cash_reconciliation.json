@@ -1,0 +1,14 @@
+[
+  {
+    "recon_id": "REC-TODAY",
+    "merchant_id": "MER-001",
+    "days_ago": 0,
+    "expected_cash": null,
+    "actual_cash": 10700,
+    "variance": null,
+    "reason": "",
+    "approved_by": "",
+    "timestamp": "",
+    "status": "PENDING"
+  }
+]

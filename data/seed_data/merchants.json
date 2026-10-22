@@ -1,0 +1,68 @@
+[
+  {
+    "merchant_id": "MER-001",
+    "name": "Lakshmi General Stores",
+    "owner_user_id": "M001",
+    "type": "kirana",
+    "role": "self",
+    "city": "Mysuru",
+    "language": "kn-IN"
+  },
+  {
+    "merchant_id": "VEN-ABC",
+    "name": "ABC Stationers",
+    "role": "vendor",
+    "category": "stationery",
+    "rating": 4.6,
+    "distance_km": 1.8,
+    "delivery": "Tomorrow 9 AM",
+    "catalog": {
+      "notebook": {
+        "price": 60,
+        "stock": 200
+      },
+      "pen": {
+        "price": 42,
+        "stock": 500
+      }
+    }
+  },
+  {
+    "merchant_id": "VEN-XYZ",
+    "name": "XYZ Book Depot",
+    "role": "vendor",
+    "category": "stationery",
+    "rating": 4.3,
+    "distance_km": 3.2,
+    "delivery": "Tomorrow 5 PM",
+    "catalog": {
+      "notebook": {
+        "price": 65,
+        "stock": 120
+      },
+      "pen": {
+        "price": 45,
+        "stock": 300
+      }
+    }
+  },
+  {
+    "merchant_id": "VEN-PQR",
+    "name": "PQR Office Mart",
+    "role": "vendor",
+    "category": "stationery",
+    "rating": 4.1,
+    "distance_km": 5.5,
+    "delivery": "Day after tomorrow",
+    "catalog": {
+      "notebook": {
+        "price": 55,
+        "stock": 12
+      },
+      "pen": {
+        "price": 40,
+        "stock": 80
+      }
+    }
+  }
+]

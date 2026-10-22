@@ -1,0 +1,50 @@
+[
+  {
+    "expense_id": "EXP-01",
+    "merchant_id": "MER-001",
+    "days_ago": 0,
+    "category": "Staff wages",
+    "amount": 3000,
+    "mode": "cash"
+  },
+  {
+    "expense_id": "EXP-02",
+    "merchant_id": "MER-001",
+    "days_ago": 0,
+    "category": "Electricity",
+    "amount": 1800,
+    "mode": "cash"
+  },
+  {
+    "expense_id": "EXP-03",
+    "merchant_id": "MER-001",
+    "days_ago": 0,
+    "category": "Transport",
+    "amount": 1200,
+    "mode": "cash"
+  },
+  {
+    "expense_id": "EXP-04",
+    "merchant_id": "MER-001",
+    "days_ago": 0,
+    "category": "Packaging & misc",
+    "amount": 1200,
+    "mode": "cash"
+  },
+  {
+    "expense_id": "EXP-05",
+    "merchant_id": "MER-001",
+    "days_ago": 1,
+    "category": "Staff wages",
+    "amount": 3000,
+    "mode": "cash"
+  },
+  {
+    "expense_id": "EXP-06",
+    "merchant_id": "MER-001",
+    "days_ago": 1,
+    "category": "Transport",
+    "amount": 900,
+    "mode": "cash"
+  }
+]
