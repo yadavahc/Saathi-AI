@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 const SPEAKER_STYLE: Record<string, string> = {
   USER: "text-sky-300", SAATHI: "text-brand-300", SYSTEM: "text-slate-400", TOOL: "text-amber-300", DATA: "text-violet-300",
-  SUPPLIER: "text-saffron-400", MERCHANT: "text-saffron-400",
+  SUPPLIER: "text-saffron-400", MERCHANT: "text-saffron-400", CALLER: "text-rose-300",
 };
 
 export function DemoStrip({ demo, onScenario }: { demo: any; onScenario: (id: number) => void }) {

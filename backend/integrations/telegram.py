@@ -30,6 +30,7 @@ class TelegramClient:
         self.detail = "Telegram not configured — messages shown in dashboard outbox."
         self.bot_username = ""
         self._callback_handler: Callable[[str, str], str] | None = None
+        self._photo_handler: Callable[[bytes, str], None] | None = None
         # Pooled keep-alive clients: a fresh TLS handshake to Telegram costs ~1.5 s.
         self._http = httpx.Client(timeout=20)
         self._poll_http = httpx.Client(timeout=40)
@@ -51,6 +52,24 @@ class TelegramClient:
         except Exception as exc:
             log.warning("Telegram %s error: %s", method, exc)
             return None
+
+    def on_photo(self, handler: Callable[[bytes, str], None]) -> None:
+        """handler(image_bytes, chat_id) is called in a background thread for every photo the bot receives."""
+        self._photo_handler = handler
+
+    def download_file(self, file_id: str) -> bytes | None:
+        info = self._api("getFile", file_id=file_id)
+        if not info or not info.get("file_path"):
+            return None
+        try:
+            return self._http.get(f"https://api.telegram.org/file/bot{self.token}/{info['file_path']}").content
+        except Exception as exc:
+            log.warning("Telegram file download failed: %s", exc)
+            return None
+
+    def reply(self, chat_id: str, text: str) -> None:
+        if self.enabled and chat_id:
+            self._api("sendMessage", chat_id=chat_id, text=text, parse_mode="HTML")
 
     def start(self, callback_handler: Callable[[str, str], str]) -> None:
         self._callback_handler = callback_handler
@@ -74,6 +93,8 @@ class TelegramClient:
             return settings.telegram_supplier_chat_id
         if role == "customer" and settings.telegram_customer_chat_id:
             return settings.telegram_customer_chat_id
+        if role == "family" and settings.telegram_family_chat_id:
+            return settings.telegram_family_chat_id
         return self.default_chat
 
     # ── sending ────────────────────────────────────────────────────────────
@@ -161,6 +182,17 @@ class TelegramClient:
                 self.default_chat = chat_id
                 self.status, self.detail = "live", f"@{self.bot_username} · linked chat {chat_id}"
                 log.info("Telegram chat linked: %s", chat_id)
+            if message.get("photo") and self._photo_handler:
+                file_id = message["photo"][-1]["file_id"]  # largest size
+                self._api("sendMessage", chat_id=chat_id, text="📷 Got it — SAATHI is reading your photo…")
+
+                def work(fid=file_id, cid=chat_id):
+                    data = self.download_file(fid)
+                    if data:
+                        self._photo_handler(data, cid)
+
+                threading.Thread(target=work, daemon=True).start()
+                return
             if (message.get("text") or "").startswith("/start"):
                 self._api("sendMessage", chat_id=chat_id,
                           text="🙏 Namaskara! SAATHI AI is linked to this chat. Approvals, purchase orders, reminders and alerts will arrive here.")

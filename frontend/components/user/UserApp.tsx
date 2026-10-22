@@ -7,6 +7,8 @@ import { inr, time } from "@/services/format";
 import Ask, { Reply } from "./Ask";
 import { LakshmiHome, RahulHome } from "./Homes";
 import { ApprovalTile, CallOverlay, Card, Pill, Section, friendlyStatus } from "./parts";
+import { ShieldCard, ShieldScreen } from "./Shield";
+import { SnapCard } from "./Snap";
 
 const LANGS = [
   { id: "auto", label: "Auto" },
@@ -45,6 +47,7 @@ export default function UserApp({ userId, onSignOut }: { userId: string; onSignO
   const [voiceOn, setVoiceOn] = useState(true);
   const [reply, setReply] = useState<Reply>(null);
   const [asking, setAsking] = useState<string | null>(null);
+  const [shieldId, setShieldId] = useState<string | null>(null);
   const top = useRef<HTMLDivElement>(null);
 
   if (!data) {
@@ -53,6 +56,18 @@ export default function UserApp({ userId, onSignOut }: { userId: string; onSignO
 
   const persona: Persona = data.user.role === "merchant" ? "merchant" : "consumer";
   const pending = data.pending || [];
+
+  async function openShield(source: "simulation" | "mic" | "phone", scenario?: string) {
+    try {
+      const s = await api.shieldStart(source, scenario, userId);
+      setShieldId(s.session_id);
+      refresh();
+    } catch (e: any) {
+      alert(e.message);
+    }
+  }
+
+  const shield = data.shield && (data.shield.status === "LISTENING" || data.shield.session_id === shieldId) ? data.shield : null;
 
   function ask(prompt: string) {
     setTab("home");
@@ -89,6 +104,7 @@ export default function UserApp({ userId, onSignOut }: { userId: string; onSignO
           <>
             <AskWithPrefill key={asking || "ask"} prefill={asking} clearPrefill={() => setAsking(null)} persona={persona} language={language}
               voiceOn={voiceOn} reply={reply} setReply={setReply} onDone={refresh} />
+            {persona === "consumer" ? <ShieldCard phoneReady={!!data.phone_ready} onOpen={openShield} /> : <SnapCard docs={data.documents} onDone={refresh} />}
             {pending.length > 0 && (
               <Section title="Waiting for your OK" action={<Pill tone="amber">{pending.length}</Pill>}>
                 <div className="space-y-3">{pending.map((a: any) => <ApprovalTile key={a.approval_id} a={a} onDone={refresh} />)}</div>
@@ -132,6 +148,9 @@ export default function UserApp({ userId, onSignOut }: { userId: string; onSignO
       </nav>
 
       {data.call && <CallOverlay call={data.call} voiceOn={voiceOn} onChange={refresh} />}
+      {shield && !data.call && (
+        <ShieldScreen session={shield} pending={pending} voiceOn={voiceOn} onChange={refresh} onClose={() => setShieldId(null)} />
+      )}
     </div>
   );
 }

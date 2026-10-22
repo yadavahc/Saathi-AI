@@ -1,0 +1,47 @@
+{
+  "khata": {
+    "doc_type": "khata",
+    "confidence": 0.95,
+    "summary": "Handwritten khata page from Lakshmi General Stores with 5 customer balances",
+    "khata_entries": [
+      {"name": "Ramesh", "amount": 3500, "note": "4500 - 1000 paid"},
+      {"name": "Suresh", "amount": 2500, "note": null},
+      {"name": "Meena", "amount": 1500, "note": null},
+      {"name": "Ravi", "amount": 3200, "note": "new"},
+      {"name": "Kavya", "amount": 800, "note": "new"}
+    ],
+    "bill": {"supplier": null, "bill_number": null, "date": null, "items": [], "total": null},
+    "shelf_items": []
+  },
+  "bill": {
+    "doc_type": "supplier_bill",
+    "confidence": 0.97,
+    "summary": "ABC Stores wholesale bill AB/2291 for rice and sugar",
+    "khata_entries": [],
+    "bill": {
+      "supplier": "ABC Stores (Wholesale)",
+      "bill_number": "AB/2291",
+      "date": "22-10-2026",
+      "items": [
+        {"name": "Sona Masoori Rice", "quantity": 50, "unit": "KG", "unit_price": 52, "line_total": 2600},
+        {"name": "Sugar", "quantity": 20, "unit": "KG", "unit_price": 40, "line_total": 800}
+      ],
+      "total": 3400
+    },
+    "shelf_items": []
+  },
+  "shelf": {
+    "doc_type": "shelf",
+    "confidence": 0.9,
+    "summary": "Store shelf with rice nearly empty and tea powder low",
+    "khata_entries": [],
+    "bill": {"supplier": null, "bill_number": null, "date": null, "items": [], "total": null},
+    "shelf_items": [
+      {"name": "Rice", "level": "empty"},
+      {"name": "Sugar", "level": "full"},
+      {"name": "Toor Dal", "level": "half"},
+      {"name": "Tea Powder", "level": "low"},
+      {"name": "Sunflower Oil", "level": "full"}
+    ]
+  }
+}

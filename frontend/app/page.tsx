@@ -7,13 +7,14 @@ import { CallsView, FraudView, RadarView, SOSView } from "@/dashboard/FinanceVie
 import { CampaignsView, CashView, CreditView, HealthView, InventoryView, OrdersView } from "@/dashboard/MerchantViews";
 import OverviewView from "@/dashboard/OverviewView";
 import { ActivityView, AgentsView } from "@/dashboard/SystemViews";
+import { ShieldView, SnapView } from "@/dashboard/WowViews";
 import type { Ctx } from "@/dashboard/types";
 import { useDashboard } from "@/hooks/useDashboard";
 import { playAudio } from "@/hooks/useRecorder";
 import { api, Persona } from "@/services/api";
 
 const VIEWS: Record<string, (ctx: Ctx) => JSX.Element | null> = {
-  overview: OverviewView, calls: CallsView, radar: RadarView, fraud: FraudView, sos: SOSView, health: HealthView, cash: CashView,
+  overview: OverviewView, shield: ShieldView, snap: SnapView, calls: CallsView, radar: RadarView, fraud: FraudView, sos: SOSView, health: HealthView, cash: CashView,
   inventory: InventoryView, credit: CreditView, orders: OrdersView, campaigns: CampaignsView, agents: AgentsView, activity: ActivityView,
 };
 
@@ -34,6 +35,8 @@ export default function Page() {
     const status = data?.demo?.status;
     if (status === "complete" && lastDemo.current === "running" && data.demo.scenarios.every((s: any) => s.status !== "pending")) setShowImpact(true);
     if (status === "running" && data.demo.current === 1 && view !== "calls" && view !== "overview") setView("overview");
+    if (status === "running" && data.demo.current === 9) setView("shield");
+    if (status === "running" && data.demo.current === 10) setView("snap");
     lastDemo.current = status;
   }, [data?.demo?.status, data?.demo?.current]);
 

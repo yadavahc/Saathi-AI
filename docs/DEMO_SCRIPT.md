@@ -13,6 +13,8 @@
 | 6 | **Payment prediction.** Nightly risk scan. | ₹8,999 AutoPay, balance ₹5,200, 87% failure → sweep ₹5,000 → **RISK REDUCED 87% → 8%**. |
 | 7 | **Customer credit.** "Ramesh ge reminder kalisu." | Bilingual reminder sent → **REMINDER SENT**. |
 | 8 | **Commerce.** "20 notebooks and 10 pens tomorrow under ₹2,000." | 3 vendors compared → ABC ₹1,620, 9 AM → merchant accepts → **ORDER CONFIRMED**. |
-| ★ | Impact screen. | "Don't just tell me what happened. Help me fix it." — 20/20 outcomes, each verified against stored state. |
+| 9 | **Scam Shield.** "Rahul gets a call from 'Mumbai Cyber Crime'." | Scammer's voice plays; red flags light up one by one; risk jumps to SCAM; SAATHI warns in Kannada; report + family alert + block approved. |
+| 10 | **Snap & Act.** Hold up the supplier bill. | Claude reads it; ₹52/kg vs agreed ₹48 → ₹200 overcharge; dispute sent on Telegram; delivery recorded at ₹3,200. |
+| ★ | Impact screen. | "Don't just tell me what happened. Help me fix it." — 24/24 outcomes, each verified against stored state. |
 
 **Live extras (if time):** type in Tamil or Hindi in *Talk to SAATHI*; say "my OTP is 1234" to show the safety guard; open **Activity Log** to show the audit trail; tap a Telegram button on the phone and watch the dashboard update.

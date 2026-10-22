@@ -11,9 +11,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 # Importing tool modules registers every tool with the orchestrator.
-from backend.tools import commerce, comms, financial_safety, merchant_growth, merchant_ops, money_sos, payment_reliability  # noqa: F401
-from backend.agents import actions  # noqa: F401  (registers approval handlers + hooks)
-from backend.api import core, domain, webhooks
+from backend.tools import commerce, comms, financial_safety, merchant_growth, merchant_ops, money_sos, payment_reliability, vision  # noqa: F401
+from backend.agents import actions, snap  # noqa: F401  (registers approval handlers + hooks)
+from backend.api import core, domain, shield, snap as snap_api, webhooks
 from backend.config import settings
 from backend.integrations.sheets import sheets
 from backend.integrations.telegram import telegram
@@ -26,6 +26,7 @@ log = get_logger("main")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     sheets.start()
+    telegram.on_photo(snap.from_telegram)
     telegram.start(actions.telegram_callback)
     audit.record("SAATHI AI started", agent="system", status="INFO", kind="system")
     log.info("SAATHI AI ready")
@@ -40,6 +41,8 @@ app.add_middleware(CORSMiddleware, allow_origins=[settings.frontend_origin, "htt
 app.include_router(core.router)
 app.include_router(domain.router)
 app.include_router(webhooks.router)
+app.include_router(shield.router)
+app.include_router(snap_api.router)
 
 
 @app.exception_handler(Exception)

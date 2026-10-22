@@ -44,6 +44,8 @@ LOCAL_TABLES: dict[str, str] = {
     "Payment Plans": "plan_id",
     "Outbox": "message_id",
     "Agent Runs": "run_id",
+    "Shield Sessions": "session_id",
+    "Documents": "doc_id",
 }
 
 # Human-friendly sequential ids. Seeded so the demo produces the ids in the brief.
@@ -62,6 +64,9 @@ ID_COUNTERS_SEED = {
     "CALL": 301,
     "MSG": 1,
     "TXN": 9001,
+    "SHD": 101,
+    "DOC": 201,
+    "CUS": 4,
 }
 
 

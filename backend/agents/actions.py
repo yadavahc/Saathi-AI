@@ -248,3 +248,44 @@ def close_approval_buttons(approval: dict) -> None:
 
 approvals.on("proposed", notify_approval)
 approvals.on("decided", close_approval_buttons)
+
+
+# ── Scam Shield actions ──────────────────────────────────────────────────────
+@approvals.handler("REPORT_SCAM_CALL")
+def report_scam_call(params: dict, approval: dict) -> dict:
+    session = store.get("Shield Sessions", params["session_id"]) or {}
+    case = {
+        "case_id": store.next_id("FRD"), "txn_id": "", "user_id": session.get("user_id", "U001"), "amount": 0,
+        "recipient": session.get("caller", ""), "risk_score": session.get("risk", 0), "type": "SCAM_CALL",
+        "summary": f"Scam call ({(session.get('ai') or {}).get('scam_type', 'scam')}) — "
+                   + "; ".join(s["label"] for s in session.get("signals", [])[:4]),
+        "status": "REPORTED", "created_at": now_iso(),
+        "reference": "Sanchar Saathi · Chakshu (sancharsaathi.gov.in) · Cybercrime 1930", "simulated": True,
+    }
+    store.insert("Fraud Cases", case)
+    sent = call("send_telegram", role="user", title=f"Scam report {case['case_id']}",
+                text=f"📝 <b>Scam call reported</b> — {case['case_id']}\nNumber: {case['recipient']}\nFiled with: {case['reference']}\n(sandbox)")
+    ok_ = store.get("Fraud Cases", case["case_id"]) is not None
+    return {"summary": f"Scam number reported · case {case['case_id']}", "verified": ok_, "case_id": case["case_id"],
+            "verification": f"Fraud Cases[{case['case_id']}].status = REPORTED", "steps": _steps(sent)}
+
+
+@approvals.handler("ALERT_FAMILY")
+def alert_family(params: dict, approval: dict) -> dict:
+    session = store.get("Shield Sessions", params["session_id"]) or {}
+    user = store.get("Users", session.get("user_id", "U001")) or {"name": "Rahul"}
+    sent = call("send_telegram", role="family", title="Family alert",
+                text=f"👨‍👩‍👦 <b>SAATHI family alert</b>\n{user['name']} just received a likely scam call from {session.get('caller')}. "
+                     "SAATHI warned them to hang up. Please check in with them.")
+    msg = (sent.get("data") or {}).get("message_id")
+    return {"summary": "Family alerted on Telegram", "verified": bool(msg), "verification": f"Outbox[{msg}] queued",
+            "steps": _steps(sent)}
+
+
+@approvals.handler("BLOCK_CALLER")
+def block_caller(params: dict, approval: dict) -> dict:
+    session = store.get("Shield Sessions", params["session_id"]) or {}
+    uid, number = session.get("user_id", "U001"), session.get("caller", "")
+    store.mutate("Users", uid, lambda u: u.setdefault("blocked_numbers", []).append(number) if number not in u.get("blocked_numbers", []) else None)
+    blocked = number in (store.get("Users", uid) or {}).get("blocked_numbers", [])
+    return {"summary": f"{number} blocked", "verified": blocked, "verification": f"Users[{uid}].blocked_numbers contains {number}", "steps": []}

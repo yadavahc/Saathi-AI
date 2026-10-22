@@ -8,9 +8,9 @@ from __future__ import annotations
 import threading
 import time
 
-from backend.agents import actions, financial_safety, orchestrator
+from backend.agents import actions, financial_safety, orchestrator, snap
 from backend.config import settings
-from backend.services import approvals, calls
+from backend.services import approvals, calls, scam_shield
 from backend.services.store import store
 from backend.utils.helpers import get_logger, now_iso
 
@@ -25,6 +25,8 @@ SCENARIOS = [
     {"id": 6, "key": "payment", "title": "Payment Prediction", "subtitle": "Prevent an AutoPay failure"},
     {"id": 7, "key": "credit", "title": "Customer Credit", "subtitle": "Reminder via Telegram"},
     {"id": 8, "key": "commerce", "title": "NL Commerce", "subtitle": "Find → compare → order"},
+    {"id": 9, "key": "shield", "title": "Scam Shield", "subtitle": "Live scam-call detection"},
+    {"id": 10, "key": "snap", "title": "Snap & Act", "subtitle": "Photo of a bill → overcharge caught"},
 ]
 
 
@@ -251,7 +253,44 @@ def demo_commerce() -> None:
             say("SAATHI", (final.get("result") or {}).get("summary", ""), verified=final["status"] == "EXECUTED")
 
 
-RUNNERS = {1: demo_fraud, 2: demo_sos, 3: demo_health, 4: demo_inventory, 5: demo_growth, 6: demo_payment, 7: demo_credit, 8: demo_commerce}
+def demo_shield() -> None:
+    say("SYSTEM", "Rahul gets a call from an unknown number and turns on Scam Shield")
+    session = scam_shield.simulate("digital_arrest", "U001", pace=1.0)
+    sid = session["session_id"]
+    _scenario(9)["run_ids"].append(session["run_id"])
+    shown, warned = 0, set()
+    while (scam_shield.get(sid) or {}).get("status") == "LISTENING":
+        _check()
+        s = scam_shield.get(sid)
+        for t in s["transcript"][shown:]:
+            say("CALLER" if t["speaker"] == "CALL" or t["speaker"] == "CALLER" else "USER", t["text"])
+        shown = len(s["transcript"])
+        for w in s["warnings"]:
+            if w["level"] not in warned:
+                warned.add(w["level"])
+                say("SAATHI", f"{w['text']}  (risk {s['risk']}/100)", verified=w["level"] == "SCAM")
+        time.sleep(0.3)
+    s = scam_shield.get(sid)
+    if s.get("ai"):
+        say("SAATHI", f"Claude: {s['ai']['scam_type'].replace('_', ' ')} — {s['ai']['explanation']}")
+    for aid in s["approval_ids"]:
+        result = human_approval(aid, "Yes, do it.", "Rahul (voice)")
+        say("SAATHI", (result.get("result") or {}).get("summary", ""), verified=result["status"] == "EXECUTED")
+
+
+def demo_snap() -> None:
+    say("USER", "📷 (Lakshmi photographs the supplier bill)")
+    from backend.tools.vision import SAMPLES
+    doc = snap.process((SAMPLES / "bill.png").read_bytes(), "image/png", user_id="M001", source="demo", sample="bill")
+    _track({"run_id": doc["run_id"]})
+    say("SAATHI", doc.get("reply", ""))
+    say("SAATHI", doc.get("reply_en", ""))
+    for aid in doc.get("approval_ids", []):
+        result = human_approval(aid, "Howdu.", "Lakshmi (voice)")
+        say("SAATHI", (result.get("result") or {}).get("summary", ""), verified=result["status"] == "EXECUTED")
+
+
+RUNNERS = {1: demo_fraud, 2: demo_sos, 3: demo_health, 4: demo_inventory, 5: demo_growth, 6: demo_payment, 7: demo_credit, 8: demo_commerce, 9: demo_shield, 10: demo_snap}
 
 
 def _run(ids: list[int], generation: int) -> None:
@@ -336,12 +375,18 @@ def impact() -> list[dict]:
                                  ("Cash variance identified", recon.get("actual_cash") is not None and bool(health_runs)),
                                  ("Inventory shortage detected", bool(pos) or bool(health_runs)),
                                  ("Supplier order created", bool(pos)),
-                                 ("Supplier approval received", any(o["status"] == "CONFIRMED" for o in pos)),
+                                 ("Supplier approval received", any(o["status"] in {"CONFIRMED", "DELIVERED"} for o in pos)),
                                  ("Customer payment reminder sent", bool(reminders))]),
         ("Merchant growth", [("Sales decline detected", bool(camps)), ("Growth opportunity identified", bool(camps)),
                              ("Campaign created", bool(camps)), ("Campaign performance measured", any(c.get("after_daily") for c in camps))]),
         ("Payment reliability", [("Payment failure predicted", bool(preds)), ("Payment plan created", bool(plans))]),
         ("Commerce", [("Natural-language order completed", bool(commerce_orders))]),
+        ("Wow: Scam Shield & Snap", [
+            ("Scam call detected live", any(s["verdict"] == "SCAM" for s in store.all("Shield Sessions"))),
+            ("Scam reported & family alerted", any(c.get("type") == "SCAM_CALL" for c in fraud)),
+            ("Paper bill read by camera", any(d["doc_type"] == "supplier_bill" for d in store.all("Documents"))),
+            ("Overcharge caught & disputed", any(d.get("dispute") for d in store.all("Documents"))),
+        ]),
         ("Trust", [("Every action recorded in audit trail", len(logs) > 0)]),
     ]
     return [{"group": g, "items": [{"label": label, "done": done} for label, done in items]} for g, items in groups]

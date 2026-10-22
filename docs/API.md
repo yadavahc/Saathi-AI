@@ -60,10 +60,30 @@ State-changing endpoints return a **PENDING approval**; they never execute direc
 | GET | `/api/runs` | Agent run traces |
 | GET | `/api/health` | Integration status |
 
+## Scam Shield
+| Method | Path | Body / notes |
+|---|---|---|
+| POST | `/api/shield/start` | `{source: simulation\|mic\|phone, scenario?: digital_arrest\|kyc_fraud\|safe_call, user_id?, caller?}` |
+| POST | `/api/shield/{id}/audio` | multipart `audio` — one speakerphone clip → Sarvam STT → detector |
+| POST | `/api/shield/{id}/text` | `{text, speaker}` — add an utterance directly |
+| POST | `/api/shield/{id}/end` | Stop listening |
+| GET | `/api/shield`, `/api/shield/{id}`, `/api/shield/scenarios` | Sessions (risk, verdict, signals, Claude analysis, warnings, transcript) |
+| POST | `/api/shield/vobiz/answer?session_id=` | VobizXML: greeting `<Play>` + `<Stream bidirectional="true" contentType="audio/x-l16;rate=16000">` |
+| WS | `/api/shield/stream/{id}` | Receives Vobiz `start` / `media` frames; sends `playAudio` + `checkpoint` warnings back |
+
+## Snap & Act
+| Method | Path | Body / notes |
+|---|---|---|
+| POST | `/api/snap` | multipart `image`, `user_id?`, `source?` → document with extraction, findings, approvals |
+| POST | `/api/snap/sample/{khata\|bill\|shelf}` | Process a built-in sample photo |
+| GET | `/api/snap`, `/api/snap/image/{doc_id}` | Recent documents / the stored image |
+
+Photos sent to the Telegram bot are processed the same way; the bot replies with what it read and the approvals arrive as buttons.
+
 ## Demo
 | Method | Path | Body |
 |---|---|---|
-| POST | `/api/demo/start` | `{mode: autoplay\|presenter, scenario?: 1-8}` (no scenario = reset + all eight) |
+| POST | `/api/demo/start` | `{mode: autoplay\|presenter, scenario?: 1-10}` (no scenario = reset + all ten) |
 | POST | `/api/demo/stop` | — |
 | POST | `/api/demo/reset` | — (reloads seed data) |
 | GET | `/api/demo` | Scenario statuses, narration, verified impact checklist |

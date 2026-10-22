@@ -1,7 +1,7 @@
 "use client";
 import clsx from "clsx";
 import {
-  Activity, Bot, Boxes, CircleDollarSign, HandCoins, LayoutDashboard, Megaphone, PhoneCall, Play, Radar, RotateCcw,
+  Activity, Bot, Boxes, Camera, CircleDollarSign, ShieldCheck, HandCoins, LayoutDashboard, Megaphone, PhoneCall, Play, Radar, RotateCcw,
   ShieldAlert, ShoppingCart, Siren, Smartphone, Square, Store, Volume2, VolumeX, Wallet,
 } from "lucide-react";
 import { compactInr, inr, pct } from "@/services/format";
@@ -9,6 +9,8 @@ import { compactInr, inr, pct } from "@/services/format";
 export const NAV = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "calls", label: "Live Calls", icon: PhoneCall },
+  { id: "shield", label: "Scam Shield", icon: ShieldCheck },
+  { id: "snap", label: "Snap & Act", icon: Camera },
   { id: "radar", label: "Financial Radar", icon: Radar },
   { id: "fraud", label: "Fraud", icon: ShieldAlert },
   { id: "sos", label: "Money SOS", icon: Siren },

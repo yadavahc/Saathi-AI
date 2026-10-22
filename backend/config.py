@@ -39,6 +39,7 @@ class Settings:
     telegram_default_chat_id: str = _env("TELEGRAM_DEFAULT_CHAT_ID")
     telegram_supplier_chat_id: str = _env("TELEGRAM_SUPPLIER_CHAT_ID")
     telegram_customer_chat_id: str = _env("TELEGRAM_CUSTOMER_CHAT_ID")
+    telegram_family_chat_id: str = _env("TELEGRAM_FAMILY_CHAT_ID")
     telegram_polling: bool = _flag("TELEGRAM_POLLING", True)
 
     google_sheets_id: str = _env("GOOGLE_SHEETS_ID")

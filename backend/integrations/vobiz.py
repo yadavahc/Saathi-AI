@@ -27,11 +27,11 @@ class VobizClient:
                                             ("PUBLIC_BASE_URL", settings.public_base_url)] if not value]
         self.detail = "Outbound calls via Vobiz" if self.enabled else f"Simulated live-call panel — set {', '.join(missing)} for real calls."
 
-    def place_call(self, call_id: str) -> dict:
+    def place_call(self, call_id: str, answer_url: str | None = None) -> dict:
         if not self.enabled:
             return {"placed": False, "simulated": True}
         url = f"https://api.vobiz.ai/api/v1/Account/{settings.vobiz_auth_id}/Call/"
-        answer = f"{settings.public_base_url}/api/vobiz/webhook?call_id={call_id}&step=start"
+        answer = answer_url or f"{settings.public_base_url}/api/vobiz/webhook?call_id={call_id}&step=start"
         try:
             response = httpx.post(
                 url,

@@ -34,6 +34,22 @@ export const api = {
   injectFraud: () => post("/api/risk/analyze", {}),
   telegramPress: (data: string) => post("/api/telegram/simulate", { data, who: "Dashboard (simulated tap)" }),
   measureCampaign: (id: string) => post(`/api/campaign/${id}/measure`),
+  shieldStart: (source: "simulation" | "mic" | "phone", scenario = "digital_arrest", userId = "U001") =>
+    post("/api/shield/start", { source, scenario, user_id: userId }),
+  shieldEnd: (id: string) => post(`/api/shield/${id}/end`),
+  shieldAudio: (id: string, blob: Blob) => {
+    const form = new FormData();
+    form.append("audio", blob, "chunk.webm");
+    return request(`/api/shield/${id}/audio`, { method: "POST", body: form });
+  },
+  snapUpload: (blob: Blob, userId = "M001", source = "app") => {
+    const form = new FormData();
+    form.append("image", blob, "photo.jpg");
+    form.append("user_id", userId);
+    form.append("source", source);
+    return request("/api/snap", { method: "POST", body: form });
+  },
+  snapSample: (name: string, source = "app") => post(`/api/snap/sample/${name}?source=${source}`),
   demoStart: (mode: "autoplay" | "presenter", scenario?: number) => post("/api/demo/start", { mode, scenario: scenario ?? null }),
   demoStop: () => post("/api/demo/stop"),
   demoReset: () => post("/api/demo/reset"),

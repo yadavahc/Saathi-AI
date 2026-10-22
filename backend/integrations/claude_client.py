@@ -38,7 +38,15 @@ class ClaudeClient:
         self.detail = reason
         log.warning("Claude disabled: %s", reason)
 
-    def structured(self, *, system: str, prompt: str, schema: dict, effort: str = "low", max_tokens: int = 6000) -> dict | None:
+    def vision(self, *, system: str, prompt: str, image_b64: str, media_type: str, schema: dict, effort: str = "medium") -> dict | None:
+        """Read an image (khata page, bill, shelf photo) into schema-constrained JSON."""
+        content = [
+            {"type": "image", "source": {"type": "base64", "media_type": media_type, "data": image_b64}},
+            {"type": "text", "text": prompt},
+        ]
+        return self.structured(system=system, prompt=content, schema=schema, effort=effort, max_tokens=12000)
+
+    def structured(self, *, system: str, prompt: str | list, schema: dict, effort: str = "low", max_tokens: int = 6000) -> dict | None:
         """One request constrained to a JSON schema. Returns parsed dict or None."""
         if not self.enabled or self._client is None:
             return None

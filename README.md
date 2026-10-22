@@ -28,6 +28,7 @@
 4. [Architecture](#4-architecture)
 5. [Multi-agent system](#5-multi-agent-system)
 6. [Features in detail](#6-features-in-detail)
+   * [🛡️ Scam Shield](#612-scam-shield--saathi-listens-to-a-suspicious-call-and-warns-you-live) · [📷 Snap & Act](#613-snap--act--a-photo-of-paper-becomes-verified-actions)
 7. [Approval engine, audit trail & safety](#7-approval-engine-audit-trail--safety)
 8. [Voice architecture](#8-voice-architecture)
 9. [Integrations & fallbacks](#9-integrations--fallbacks)
@@ -111,14 +112,29 @@ SAATHI has a **user app** for real people and a **Control Room** for judges and 
 </tr>
 </table>
 
+### ✨ Wow features — Scam Shield & Snap & Act
+
+<table>
+<tr>
+<td width="25%"><img src="docs/screenshots/app-shield-scam.png" alt="Scam Shield warning"/><br/><sub><b>Scam Shield</b> — live risk 98/100, Kannada warning, red flags, Claude's reason</sub></td>
+<td width="25%"><img src="docs/screenshots/app-shield-actions.png" alt="Scam Shield actions"/><br/><sub><b>Protect yourself</b> — report · alert family · block (each needs OK)</sub></td>
+<td width="25%"><img src="docs/screenshots/app-snap-bill.png" alt="Snap and act bill"/><br/><sub><b>Snap & Act</b> — bill photo → ₹200 overcharge caught</sub></td>
+<td width="25%"><img src="docs/screenshots/app-shield-card.png" alt="Rahul home with Scam Shield"/><br/><sub><b>Rahul's home</b> — Scam Shield entry points</sub></td>
+</tr>
+</table>
+
+| | |
+|---|---|
+| <img src="docs/screenshots/control-scam-shield.png" alt="Control room scam shield"/><br/>**Scam Shield (Control Room)** — risk meter, rules vs Claude, live transcript, red flags with the exact words heard | <img src="docs/screenshots/control-snap.png" alt="Control room snap and act"/><br/>**Snap & Act (Control Room)** — drop a photo, see what was read, what doesn't match, and the approvals |
+
 ### Control Room
 
 | | |
 |---|---|
 | <img src="docs/screenshots/action-trace.png" alt="Action trace"/><br/>**Action Trace** — said → understood → data → decided → approval → tool → action → verified | <img src="docs/screenshots/merchant-health.png" alt="Merchant health"/><br/>**Merchant Health** — “Aaj business hegide?” answered with priorities |
 | <img src="docs/screenshots/telegram-purchase-order.png" alt="Telegram purchase order"/><br/>**Inventory + Telegram purchase order** with ACCEPT / REJECT / COUNTER | <img src="docs/screenshots/financial-radar.png" alt="Financial radar"/><br/>**Financial Radar** — found · why it matters · recommendation · action |
-| <img src="docs/screenshots/campaigns.png" alt="Campaigns"/><br/>**Campaigns** — detect → create → publish → measure | <img src="docs/screenshots/ai-agents.png" alt="AI agents"/><br/>**AI Agents** — six specialists and 45 tools |
-| <img src="docs/screenshots/activity-log.png" alt="Activity log"/><br/>**Audit trail** — every decision explainable | <img src="docs/screenshots/impact.png" alt="Impact"/><br/>**Impact screen** — 20/20 outcomes verified against stored data |
+| <img src="docs/screenshots/campaigns.png" alt="Campaigns"/><br/>**Campaigns** — detect → create → publish → measure | <img src="docs/screenshots/ai-agents.png" alt="AI agents"/><br/>**AI Agents** — six specialists and 52 tools |
+| <img src="docs/screenshots/activity-log.png" alt="Activity log"/><br/>**Audit trail** — every decision explainable | <img src="docs/screenshots/impact.png" alt="Impact"/><br/>**Impact screen** — 24/24 outcomes verified against stored data |
 
 > Screenshots were captured in sandbox mode (Telegram, Vobiz and Sheets switched to their dashboard fallbacks; Claude and Sarvam live).
 
@@ -140,7 +156,7 @@ flowchart TB
         ORCH["Orchestrator<br/>the SAATHI loop"]
         ROUTER["Claude router<br/>intent · agents · entities · risk · language"]
         AGENTS["6 specialist agents"]
-        TOOLS["Tool orchestrator<br/>45 tools · validate · run · log · trace"]
+        TOOLS["Tool orchestrator<br/>52 tools · validate · run · log · trace"]
         APPROVE["Approval engine<br/>PENDING → APPROVED → EXECUTED"]
         VERIFY["Verify<br/>re-read stored state"]
         COMPOSE["Claude composer<br/>reply in user's language"]
@@ -222,7 +238,7 @@ Shared tools: `get_user`, `send_telegram`, `transfer_to_human`.
 
 ### Tool orchestrator
 
-Every one of the 45 tools is wrapped by `backend/tools/registry.py`, so each one automatically:
+Every one of the 52 tools is wrapped by `backend/tools/registry.py`, so each one automatically:
 
 1. validates inputs (`pydantic.validate_call`)
 2. performs the operation
@@ -361,6 +377,72 @@ A proactive feed computed from live data. Every alert has **what we found · why
 
 ---
 
+### 6.12 Scam Shield — SAATHI listens to a suspicious call and warns you live
+
+India's fastest-growing fraud starts **before** any payment: fake police "digital arrest" calls, drugs-in-parcel stories, fake bank KYC, OTP and AnyDesk requests. Scam Shield joins the call, listens, and warns the user **in Kannada while the call is still going on**.
+
+```mermaid
+flowchart LR
+    subgraph Sources["How SAATHI hears the call"]
+        P["☎️ Phone<br/>SAATHI calls you,<br/>you merge the scam call"]
+        M["🎙️ Speakerphone<br/>browser mic, 6 s clips"]
+        D["🎭 Demo call<br/>scripted, voiced by Sarvam"]
+    end
+    P -->|"Vobiz Stream websocket<br/>L16 / 16 kHz frames"| W["5 s windows"] --> STT["Sarvam STT"]
+    M --> STT
+    D --> I
+    STT --> I["ingest()"]
+    I --> RU["Red-flag rules<br/>Hindi · Kannada · English<br/>native + Latin script"]
+    I --> CL["Claude reads the whole<br/>conversation → scam type"]
+    RU & CL --> RISK{"risk = max(rules, Claude)"}
+    RISK -->|"≥ 35"| S1["⚠️ SUSPICIOUS<br/>Kannada voice warning"]
+    RISK -->|"≥ 70"| S2["🚨 SCAM<br/>warning spoken into the call<br/>+ Telegram alert"]
+    S2 --> AP["Approvals: report to Chakshu / 1930 ·<br/>alert family · block number"]
+```
+
+| Red flag (explainable rule) | Weight | Example it catches |
+|---|---|---|
+| Pretends to be police / CBI / RBI / customs | 22 | "Mumbai Cyber Crime se Inspector…", "SBI head office" |
+| Threatens arrest, FIR, "digital arrest" | 25 | "Aapko digital arrest kiya ja raha hai" |
+| Fake parcel / drugs / passport story | 15 | "FedEx parcel mein drugs mile hain" |
+| Fake KYC / account or SIM block | 15 | "KYC expire aagide, account block aagutte" |
+| Asks for OTP, PIN, CVV or a remote-access app | 30 | "OTP bataiye", "AnyDesk install maadi" |
+| Money to a "safe account" / UPI ID | 30 | "RBI safe account mein transfer kijiye" |
+| Stay on the call, tell no one | 18 | "Call disconnect mat kijiye, kisi ko mat bataiye" |
+| Extreme urgency | 10 | "Abhi turant", "hattu nimisha maatra" |
+| Prize / refund bait | 15 | "You have won a lottery" |
+
+**Tested results** (real Sarvam voices + Claude):
+
+| Call | Verdict | Risk | Notes |
+|---|---|---|---|
+| "Digital arrest" scam (Hinglish) | 🚨 SCAM | 100 | 7 red flags; Claude: *digital_arrest*, 0.99 |
+| Fake bank KYC scam (Kannada) | 🚨 SCAM | 98 | Authority + KYC + OTP/AnyDesk + urgency |
+| Genuine pharmacy call (English) | ✅ SAFE | 4 | No red flags — no false alarm |
+| Live phone stream (Hindi speech, Vobiz frame format) | 🚨 SCAM | 95 | Warning streamed back into the call as `playAudio` |
+
+**Phone mode:** tap *Protect a phone call* → SAATHI calls you (Vobiz) and says *"SAATHI Shield on aagide — merge the suspicious call"* → merge it → Vobiz forks the call audio to `wss://…/api/shield/stream/{id}` → every ~5 s of speech is transcribed and scored → warnings are spoken back into the same call.
+
+### 6.13 Snap & Act — a photo of paper becomes verified actions
+
+Most kirana stores still run on paper. Lakshmi photographs it — in the app, the Control Room, or by **sending the photo to the Telegram bot** — and SAATHI reads it with **Claude vision**, checks it against her records in code, and proposes actions.
+
+```mermaid
+flowchart LR
+    PH["📷 Photo<br/>app · Control Room · Telegram"] --> V["Claude vision<br/>classify + extract<br/>(schema-constrained JSON)"]
+    V -->|khata| K["reconcile_khata<br/>fuzzy-match names to<br/>Customer Credit"] --> KA["Approve → credit book updated"]
+    V -->|supplier bill| B["match_bill_to_order<br/>billed rate vs PO / agreed cost"] --> BA["Approve → dispute overcharge<br/>(Telegram to supplier)<br/>+ record delivery at fair amount"]
+    V -->|shelf| S["assess_shelf<br/>map bins to inventory"] --> SA["Approve → purchase orders<br/>for empty / low items"]
+```
+
+| Photo | What SAATHI read | What it found | Actions |
+|---|---|---|---|
+| Handwritten **khata** page | Ramesh 4500 − 1000 paid = 3500, Suresh 2500, Meena 1500, Ravi 3200 (new), Kavya 800 (new) | Ramesh ₹4,500 → ₹3,500 · 2 new customers (₹4,000) | Update credit book → total ₹11,500 |
+| **Supplier bill** AB/2291 | Rice 50 KG @ ₹52, Sugar 20 KG @ ₹40 = ₹3,400 | Rice agreed at ₹48 → **₹200 overcharge** | Dispute on Telegram · record delivery at fair ₹3,200 · stock +50 KG / +20 KG |
+| **Shelf** photo | Rice empty, Tea low, Sugar / Oil full, Dal half | Rice and tea need reorder | Purchase orders to suppliers |
+
+Only perception uses AI — matching, price checks and every record change are deterministic backend code. If Claude is unreachable, the built-in samples fall back to stored readings so the demo never breaks.
+
 ## 7. Approval engine, audit trail & safety
 
 ```mermaid
@@ -442,9 +524,9 @@ flowchart LR
 
 | Integration | Used for | If unavailable |
 |---|---|---|
-| **Claude** (`claude-sonnet-5-5`) | Routing (structured JSON) and multilingual replies | Multilingual keyword router + reply templates |
+| **Claude** (`claude-sonnet-5-5`) | Routing (structured JSON), multilingual replies, scam-call analysis, **vision** for Snap & Act | Keyword router + templates; rule-only Scam Shield; stored sample readings |
 | **Sarvam AI** | Speech-to-text and text-to-speech in Indian languages | Text-only / simulated voice |
-| **Vobiz** | Outbound fraud-verification phone calls | Simulated live-call panel (same state machine) |
+| **Vobiz** | Fraud-verification calls; **live call-audio streaming** (`<Stream>` websocket) for Scam Shield | Simulated live-call panel; speakerphone / demo Scam Shield |
 | **Telegram Bot API** | Approvals, purchase orders, reminders, alerts — with working buttons | Messages and buttons shown in the dashboard outbox |
 | **Google Sheets** | Hackathon data backend (17 sheets, batched writes) | Local seeded JSON data |
 
@@ -493,7 +575,7 @@ erDiagram
 ```text
 backend/
   agents/        orchestrator, Claude router, composer, 6 agents, approval action handlers
-  tools/         45 tools + registry (validation, logging, tracing, error handling)
+  tools/         52 tools + registry (validation, logging, tracing, error handling)
   services/      store, approvals, audit, run trace, calls, financial radar, user-app view
   integrations/  claude_client, sarvam, vobiz, telegram, sheets
   api/           core (chat, voice, dashboard, approvals, calls, demo, user app), domain, webhooks
@@ -560,7 +642,7 @@ cd frontend && npm run dev
 | `ANTHROPIC_API_KEY`, `CLAUDE_MODEL` | Claude routing and replies |
 | `SARVAM_API_KEY`, `SARVAM_TTS_MODEL`, `SARVAM_STT_MODEL`, `SARVAM_SPEAKER` | Indian-language voice |
 | `VOBIZ_AUTH_ID`, `VOBIZ_AUTH_TOKEN`, `VOBIZ_FROM_NUMBER`, `VOBIZ_TO_NUMBER` | Real phone calls (also needs `PUBLIC_BASE_URL`) |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_DEFAULT_CHAT_ID`, `TELEGRAM_SUPPLIER_CHAT_ID`, `TELEGRAM_CUSTOMER_CHAT_ID`, `TELEGRAM_POLLING` | Telegram action layer |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_DEFAULT_CHAT_ID`, `TELEGRAM_SUPPLIER_CHAT_ID`, `TELEGRAM_CUSTOMER_CHAT_ID`, `TELEGRAM_FAMILY_CHAT_ID`, `TELEGRAM_POLLING` | Telegram action layer (family chat receives Scam Shield alerts) |
 | `GOOGLE_SHEETS_ID`, `GOOGLE_SERVICE_ACCOUNT_FILE` | Google Sheets backend |
 | `PUBLIC_BASE_URL` | Public URL (e.g. ngrok) for Vobiz / Telegram webhooks |
 | `FRONTEND_ORIGIN`, `DEMO_STEP_DELAY` | CORS origin, demo pacing |
@@ -615,8 +697,10 @@ Press **START LIVE DEMO** in the Control Room. *Autoplay* scripts the human answ
 | 6 | **Payment prediction** — ₹8,999 AutoPay | 87% failure → ₹5,000 sweep → 8% |
 | 7 | **Customer credit** — "Ramesh ge reminder kalisu" | REMINDER SENT |
 | 8 | **Commerce** — "20 notebooks + 10 pens under ₹2,000" | ABC ₹1,620 → ORDER CONFIRMED |
+| 9 | **Scam Shield** — fake police 'digital arrest' call | Red flags light up live → Kannada warning → reported, family alerted, number blocked |
+| 10 | **Snap & Act** — photo of a supplier bill | ₹200 overcharge caught → dispute sent → delivery recorded at fair ₹3,200 |
 
-The demo ends on an **impact screen** where each of the 20 checkmarks is computed from stored data. A presenter script is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md).
+The demo ends on an **impact screen** where each of the 24 checkmarks is computed from stored data. A presenter script is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md).
 
 ---
 
@@ -639,6 +723,10 @@ Full reference: [docs/API.md](docs/API.md) · live OpenAPI at `/docs`.
 | POST | `/api/approvals/{id}/approve` · `/reject` | Approval engine |
 | GET | `/api/dashboard` · `/activity` · `/approvals` · `/calls` · `/financial-radar` · `/agents` | Control Room data |
 | GET | `/api/app/{user_id}` | User app — one person's own data |
+| POST | `/api/shield/start` · `/{id}/audio` · `/{id}/text` · `/{id}/end` | Scam Shield sessions (simulation · mic · phone) |
+| POST · WS | `/api/shield/vobiz/answer` · `/api/shield/stream/{id}` | Phone mode: VobizXML `<Stream>` + live audio websocket |
+| POST | `/api/snap` · `/api/snap/sample/{name}` | Snap & Act: upload a photo / try a sample |
+| GET | `/api/snap` · `/api/snap/image/{doc_id}` | Processed documents and their images |
 | POST | `/api/demo/start` · `/stop` · `/reset` | Demo mode |
 
 ---
@@ -660,7 +748,8 @@ SAATHI does not replace Paytm, PhonePe or a bank — it is the **action layer th
 ## 16. Future scope
 
 * Account Aggregator consent flows and real bank / UPI mandate APIs behind the same approval engine
-* Streaming voice for sub-second phone conversations and native Kannada speech recognition on calls
+* Streaming STT for sub-second Scam Shield reaction, caller-ID reputation (e.g. Truecaller for Business) and deepfake-voice detection
+* Snap & Act for UPI screenshots and handwritten price lists; WhatsApp photo intake
 * Learned risk and churn models, keeping today's rule-based scores as explainable baselines
 * WhatsApp Business channel, multi-merchant tenancy and role-based approvals
 * Mobile-number / Telegram login and per-user memory (trusted recipients, preferences)

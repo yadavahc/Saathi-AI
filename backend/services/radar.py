@@ -9,7 +9,7 @@ from backend.integrations.sarvam import sarvam
 from backend.integrations.sheets import sheets
 from backend.integrations.telegram import telegram
 from backend.integrations.vobiz import vobiz
-from backend.services import approvals, audit, calls, flow
+from backend.services import approvals, audit, calls, flow, scam_shield
 from backend.services.store import store
 from backend.tools.payment_reliability import failure_probability
 from backend.tools.registry import TOOLS
@@ -156,6 +156,8 @@ def dashboard() -> dict:
         "agents": agents_status(),
         "tools": [{"name": t.name, "agent": t.agent, "mutates": t.mutates} for t in TOOLS.values()],
         "integrations": integrations(),
+        "shield": scam_shield.recent(4),
+        "documents": [{**d, "image_url": f"/api/snap/image/{d['doc_id']}"} for d in reversed(store.all("Documents"))][:8],
     }
 
 
@@ -183,6 +185,9 @@ def user_app(user_id: str) -> dict | None:
         "history": [approvals.as_card(a) for a in mine if a["status"] != "PENDING"][:15],
         "call": next((c for c in reversed(store.all("Calls")) if c["user_id"] == user_id and c["status"] != "COMPLETED"), None),
         "last_call": next((c for c in reversed(store.all("Calls")) if c["user_id"] == user_id), None),
+        "shield": next((s for s in reversed(store.all("Shield Sessions")) if s["user_id"] == user_id), None),
+        "documents": [{**d, "image_url": f"/api/snap/image/{d['doc_id']}"} for d in reversed(store.all("Documents")) if d["user_id"] == user_id][:5],
+        "phone_ready": vobiz.enabled,
         "version": store.version,
     }
     if user["role"] == "consumer":

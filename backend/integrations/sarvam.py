@@ -53,12 +53,13 @@ class SarvamClient:
             log.warning("Sarvam STT failed: %s", exc)
             return None
 
-    def speak(self, text: str, language_code: str = "en-IN") -> str | None:
+    def speak(self, text: str, language_code: str = "en-IN", speaker: str | None = None, sample_rate: int | None = None) -> str | None:
         """Synthesize speech; returns an audio id served at /api/audio/{id}."""
         if not self.enabled or not text.strip():
             return None
         lang = language_code if language_code in TTS_LANGS else "en-IN"
-        audio_id = hashlib.sha1(f"{lang}:{settings.sarvam_speaker}:{text}".encode()).hexdigest()[:16]
+        voice = speaker or settings.sarvam_speaker
+        audio_id = hashlib.sha1(f"{lang}:{voice}:{sample_rate}:{text}".encode()).hexdigest()[:16]
         with self._lock:
             if audio_id in self._audio:
                 return audio_id
@@ -66,8 +67,10 @@ class SarvamClient:
             "text": text[:2400],
             "target_language_code": lang,
             "model": settings.sarvam_tts_model,
-            "speaker": settings.sarvam_speaker,
+            "speaker": voice,
         }
+        if sample_rate:
+            payload["speech_sample_rate"] = sample_rate
         try:
             response = httpx.post(f"{BASE}/text-to-speech", headers=self._headers, json=payload, timeout=30)
             if response.status_code == 400 and "language_code" in response.text:
@@ -94,6 +97,18 @@ class SarvamClient:
     def audio(self, audio_id: str) -> bytes | None:
         with self._lock:
             return self._audio.get(audio_id)
+
+    def pcm16(self, text: str, language_code: str, sample_rate: int = 16000) -> bytes | None:
+        """Raw mono 16-bit PCM (no WAV header) for streaming into a live phone call."""
+        import io
+        import wave
+
+        audio_id = self.speak(text, language_code, sample_rate=sample_rate)
+        data = self.audio(audio_id) if audio_id else None
+        if not data:
+            return None
+        with wave.open(io.BytesIO(data)) as wav:
+            return wav.readframes(wav.getnframes())
 
     def detect_language(self, text: str) -> str | None:
         if not self.enabled:
