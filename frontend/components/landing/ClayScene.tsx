@@ -118,8 +118,10 @@ function Rig({ children }: { children: React.ReactNode }) {
   return <group ref={group}>{children}</group>;
 }
 
-export default function ClayScene({ still = false }: { still?: boolean }) {
+export default function ClayScene({ still = false, wide = false }: { still?: boolean; wide?: boolean }) {
   const speed = still ? 0 : 1;
+  // wide: spread objects towards the edges, leaving the centre for the headline
+  const P = (x: number, y: number, z: number): [number, number, number] => (wide ? [Math.sign(x) * (Math.abs(x) * 0.9 + 2.1), y * 1.05, z] : [x, y, z]);
   return (
     <Canvas dpr={[1, 1.75]} camera={{ position: [0, 0, 9.5], fov: 38 }} frameloop={still ? "demand" : "always"} gl={{ antialias: true, alpha: true }} shadows>
       <ambientLight intensity={0.85} />
@@ -127,16 +129,16 @@ export default function ClayScene({ still = false }: { still?: boolean }) {
       <directionalLight position={[3, 5, 4]} intensity={1.15} castShadow shadow-mapSize={[1024, 1024]} />
       <directionalLight position={[-4, 2, 2]} intensity={0.35} color="#ffe7cf" />
       <Rig>
-        <Float speed={1.6 * speed} rotationIntensity={0.6} floatIntensity={1.1}><Shield position={[-2.35, 1.25, 0]} rotation={[0.2, 0.45, -0.15]} /></Float>
-        <Float speed={1.3 * speed} rotationIntensity={0.5} floatIntensity={0.9}><Coins position={[2.45, -1.25, 0.2]} rotation={[0.4, 0.2, 0.25]} /></Float>
-        <Float speed={1.8 * speed} rotationIntensity={0.7} floatIntensity={1.2}><Bubble position={[2.3, 1.45, -0.3]} rotation={[0.1, -0.4, 0.08]} scale={0.85} /></Float>
-        <Float speed={2.1 * speed} rotationIntensity={1} floatIntensity={1.4}><Plane position={[-2.45, -1.15, 0.4]} rotation={[0.4, 0.9, 0.3]} scale={0.95} /></Float>
-        <Float speed={1.4 * speed} rotationIntensity={0.5} floatIntensity={0.8}><Sheet position={[2.9, 0.1, -1]} rotation={[0.1, -0.6, 0.05]} scale={0.8} /></Float>
-        <Float speed={1.5 * speed} rotationIntensity={0.6} floatIntensity={0.9}><Phone position={[-3.0, 0.15, -1.1]} rotation={[0.1, 0.6, -0.1]} scale={0.85} /></Float>
-        <Float speed={2.6 * speed} floatIntensity={2}><Pill color="#c4b5fd" position={[0.9, 2.15, -1.4]} rotation={[0, 0, 0.8]} /></Float>
-        <Float speed={2.3 * speed} floatIntensity={2}><Pill color="#fda4af" position={[-0.8, -2.05, -0.8]} rotation={[0, 0, -0.6]} /></Float>
-        <Float speed={2.8 * speed} floatIntensity={2}><Pill color="#fde68a" position={[-1.3, 2.25, -1.6]} rotation={[0.4, 0, 1.2]} /></Float>
-        <Float speed={2.4 * speed} floatIntensity={2}><mesh position={[1.4, -2.2, -1]}><sphereGeometry args={[0.16, 32, 32]} /><Clay color="#7ddcb4" /></mesh></Float>
+        <Float speed={1.6 * speed} rotationIntensity={0.6} floatIntensity={1.1}><Shield position={P(-2.35, 1.25, 0)} rotation={[0.2, 0.45, -0.15]} /></Float>
+        <Float speed={1.3 * speed} rotationIntensity={0.5} floatIntensity={0.9}><Coins position={P(2.45, -1.25, 0.2)} rotation={[0.4, 0.2, 0.25]} /></Float>
+        <Float speed={1.8 * speed} rotationIntensity={0.7} floatIntensity={1.2}><Bubble position={P(2.3, 1.45, -0.3)} rotation={[0.1, -0.4, 0.08]} scale={0.85} /></Float>
+        <Float speed={2.1 * speed} rotationIntensity={1} floatIntensity={1.4}><Plane position={P(-2.45, -1.15, 0.4)} rotation={[0.4, 0.9, 0.3]} scale={0.95} /></Float>
+        <Float speed={1.4 * speed} rotationIntensity={0.5} floatIntensity={0.8}><Sheet position={P(2.9, 0.1, -1)} rotation={[0.1, -0.6, 0.05]} scale={0.8} /></Float>
+        <Float speed={1.5 * speed} rotationIntensity={0.6} floatIntensity={0.9}><Phone position={P(-3.0, 0.15, -1.1)} rotation={[0.1, 0.6, -0.1]} scale={0.85} /></Float>
+        <Float speed={2.6 * speed} floatIntensity={2}><Pill color="#c4b5fd" position={P(0.9, 2.15, -1.4)} rotation={[0, 0, 0.8]} /></Float>
+        <Float speed={2.3 * speed} floatIntensity={2}><Pill color="#fda4af" position={P(-0.8, -2.05, -0.8)} rotation={[0, 0, -0.6]} /></Float>
+        <Float speed={2.8 * speed} floatIntensity={2}><Pill color="#fde68a" position={P(-1.3, 2.25, -1.6)} rotation={[0.4, 0, 1.2]} /></Float>
+        <Float speed={2.4 * speed} floatIntensity={2}><mesh position={P(1.4, -2.2, -1)}><sphereGeometry args={[0.16, 32, 32]} /><Clay color="#7ddcb4" /></mesh></Float>
       </Rig>
       <ContactShadows position={[0, -2.6, 0]} opacity={0.12} scale={12} blur={3.2} far={4.5} color="#1f4d3f" />
     </Canvas>

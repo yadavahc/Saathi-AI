@@ -5,9 +5,9 @@ import { Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 /*
- * Saathi, the cartoon guide. He lives in the hero, then walks along the page margins as the
- * visitor scrolls — facing, stepping and leaning from his real motion. Closing him sends him
- * back to the hero, where he stays (preference remembered per browser).
+ * Saathi, the cartoon guide. He walks in below the hero and travels along the page margins as the
+ * visitor scrolls — facing, stepping and leaning from his real motion. He stays out of the hero;
+ * closing him sends him off-screen until "Bring Saathi back" (preference remembered per browser).
  */
 
 type Pose = "idle" | "wave" | "point" | "think" | "cheer" | "alarm";
@@ -101,15 +101,14 @@ export function Guide() {
   const [follow, setFollow] = useState(true);
   const [ready, setReady] = useState(false);
   const [stop, setStop] = useState("top");
-  const [align, setAlign] = useState<"center" | Side>("center");
+  const [align, setAlign] = useState<"center" | Side>("right");
   const [walking, setWalking] = useState(false);
   const [facing, setFacing] = useState(1);
   const [talking, setTalking] = useState(true);
   const [poke, setPoke] = useState<string | null>(null);
   const followRef = useRef(true);
   const stopRef = useRef("top");
-  const alignRef = useRef<"center" | Side>("center");
-  const attached = useRef(false);
+  const alignRef = useRef<"center" | Side>("right");
   const readyRef = useRef(false);
 
   const tx = useMotionValue(-400), ty = useMotionValue(-400), ts = useMotionValue(1);
@@ -142,7 +141,7 @@ export function Guide() {
 
   // remembered preference
   useEffect(() => {
-    try { if (localStorage.getItem(KEY) === "off") { followRef.current = false; attached.current = true; setFollow(false); } } catch {}
+    try { if (localStorage.getItem(KEY) === "off") { followRef.current = false; setFollow(false); } } catch {}
   }, []);
 
   // position: hero home, or a margin "dock" for the current section
@@ -159,21 +158,16 @@ export function Guide() {
         if (r.top <= mid && r.bottom >= mid) { cur = id; break; }
       }
       if (cur !== stopRef.current) { stopRef.current = cur; setStop(cur); }
-      const home = document.getElementById("guide-home")?.getBoundingClientRect();
-      let X: number, Y: number, S: number, A: "center" | Side;
-      if (!followRef.current || cur === "top") {
-        if (!home) return;
-        S = Math.max(0.7, Math.min(2.1, (home.height * 0.74) / H));
-        X = home.left + home.width / 2; Y = home.bottom - 6; A = "center";
-      } else {
-        const side = STOPS[cur].side;
-        const margin = (vw - CONTENT) / 2;
-        if (margin >= 130) { S = 0.75; X = side === "left" ? margin / 2 : vw - margin / 2; Y = vh - 26; A = side; }
-        else { S = vw < 640 ? 0.42 : 0.55; X = vw - (W * S) / 2 - 10; Y = vh - 8; A = "right"; }
-      }
+      let X: number, Y: number, S: number, A: Side;
+      const side = STOPS[cur].side;
+      const margin = (vw - CONTENT) / 2;
+      if (margin >= 130) { S = 0.75; X = side === "left" ? margin / 2 : vw - margin / 2; Y = vh - 26; A = side; }
+      else { S = vw < 640 ? 0.42 : 0.55; X = vw - (W * S) / 2 - 10; Y = vh - 8; A = "right"; }
+      // hero, or switched off: wait just below the screen
+      if (!followRef.current || cur === "top") Y = vh + H * S + 80;
       tx.set(X); ty.set(Y); ts.set(S);
       if (A !== alignRef.current) { alignRef.current = A; setAlign(A); }
-      if (!readyRef.current || attached.current) { x.jump(X); y.jump(Y); s.jump(S); }
+      if (!readyRef.current) { x.jump(X); y.jump(Y); s.jump(S); }
       if (!readyRef.current) { readyRef.current = true; setReady(true); }
     };
     const on = () => { if (!raf) raf = requestAnimationFrame(update); };
@@ -195,8 +189,6 @@ export function Guide() {
     followRef.current = on;
     setFollow(on);
     try { localStorage.setItem(KEY, on ? "on" : "off"); } catch {}
-    attached.current = false;
-    if (!on) setTimeout(() => { if (!followRef.current) attached.current = true; }, 1600);
     window.dispatchEvent(new Event("scroll"));
   };
   const onPoke = () => {
@@ -210,7 +202,7 @@ export function Guide() {
   const line = poke || (!follow ? "Want me to guide you?" : cfg.line);
   const restingFace = align === "left" ? 1 : align === "right" ? -1 : 1;
   const face = walking ? facing : restingFace;
-  const heroOffscreen = !follow && stop !== "top";
+  const showRestore = !follow && stop !== "top";
 
   return (
     <>
@@ -244,7 +236,7 @@ export function Guide() {
 
       {/* bring him back once he has been dismissed and the hero is out of view */}
       <AnimatePresence>
-        {heroOffscreen && (
+        {showRestore && (
           <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} onClick={() => setFollowing(true)}
             className="clay-sm fixed bottom-5 left-5 z-40 flex items-center gap-2 !rounded-full py-2 pl-2 pr-4 text-[13px] font-bold text-slate-700">
             <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-white"><Sparkles size={14} /></span>

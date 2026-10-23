@@ -98,7 +98,7 @@ Two users run through the whole product:
 
 A bright, claymorphic front door at `/` — word-by-word headline reveal, a phone mockup cycling through live SAATHI scenes over a floating Three.js clay scene (shield, coins, Telegram plane, spreadsheet), a scroll-pinned *Action Gap* story, a self-drawing loop diagram, a spotlight bento grid, live Scam Shield / Snap & Act demos, animated counters and a scroll-driven screenshot gallery (framer-motion + Lenis + React Three Fiber, honours *reduce motion*).
 
-A cartoon guide, **Saathi**, waves from the hero and then walks along the page margins as you scroll — new pose and one-line tip per section, stepping and leaning with real motion; close him with ✕ and he walks back home (remembered per browser).
+A clean hero — just **SAATHI AI**, the tagline and two buttons over floating 3D clay objects. Below it, a cartoon guide, **Saathi**, walks in and travels along the page margins as you scroll — new pose and one-line tip per section, stepping and leaning with real motion; close him with ✕ (remembered per browser) and bring him back any time.
 
 The centrepiece is a **one-minute cartoon product demo** built into the page: a video-style player with an **Indian male voiceover** (Sarvam Bulbul v3, pre-rendered per chapter and kept in sync with the playhead), play/pause, a scrubbable chapter timeline, captions and muted autoplay when in view. It animates the whole workflow — a suspicious payment, SAATHI calling Rahul through Sarvam + Vobiz, Claude choosing tools, the Telegram approval, Lakshmi's Google Sheet, the supplier tapping ACCEPT, Snap & Act catching an overcharge, and the audit trail verifying every step.
 
