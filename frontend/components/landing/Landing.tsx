@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Background, CursorGlow, ScrollProgress } from "./Background";
 import { DemoVideo } from "./DemoVideo";
 import { Features } from "./Features";
+import { Guide } from "./Guide";
 import { Hero } from "./Hero";
 import { ActionGap, LanguageBand, Loop, Nav, Trust } from "./Sections";
 import { FinalCTA, Footer, Gallery, Stats, Wow } from "./Showcase";
@@ -32,6 +33,7 @@ export default function Landing() {
       <CursorGlow />
       <ScrollProgress />
       <Nav />
+      <Guide />
       <main className="relative z-10">
         <Hero />
         <LanguageBand />

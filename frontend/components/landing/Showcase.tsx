@@ -154,7 +154,7 @@ export function Stats() {
     { v: 24, label: "Outcomes verified", s: "/24", c: "clay-butter" }, { v: 91, label: "Fraud risk scored live", s: "/100", c: "clay-rose" }, { v: 0, label: "Actions without OK", s: "", c: "clay-peach" },
   ];
   return (
-    <section className="relative py-20">
+    <section id="stats" className="relative py-20">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-5 md:grid-cols-3 md:gap-5 md:px-8">
         {stats.map((s, i) => (
           <Reveal key={s.label} delay={i * 0.06}>
@@ -182,7 +182,7 @@ export function Gallery() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const x = useTransform(scrollYProgress, [0, 1], ["2%", "-72%"]);
   return (
-    <section ref={ref} className="relative h-[300vh]">
+    <section ref={ref} id="gallery" className="relative h-[300vh]">
       <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
         <div className="mx-auto mb-10 w-full max-w-6xl px-5 md:px-8">
           <Eyebrow>Real screens</Eyebrow>
@@ -209,7 +209,7 @@ export function Gallery() {
 // ── final call to action + footer ────────────────────────────────────────────
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden py-28">
+    <section id="cta" className="relative overflow-hidden py-28">
       <div className="mx-auto max-w-5xl px-5">
         <Reveal>
           <div className="clay relative overflow-hidden !rounded-[40px] px-6 py-16 text-center md:px-14 md:py-20">

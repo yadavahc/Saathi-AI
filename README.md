@@ -14,7 +14,7 @@
 ![Telegram](https://img.shields.io/badge/Telegram-action%20layer-26A5E4?logo=telegram&logoColor=white)
 ![Google Sheets](https://img.shields.io/badge/Google%20Sheets-data-34A853?logo=googlesheets&logoColor=white)
 
-<img src="docs/screenshots/landing-hero.png" alt="SAATHI landing page" width="100%"/>
+<img src="docs/screens/landing-hero.png" alt="SAATHI landing page" width="100%"/>
 
 </div>
 
@@ -98,11 +98,13 @@ Two users run through the whole product:
 
 A bright, claymorphic front door at `/` — word-by-word headline reveal, a phone mockup cycling through live SAATHI scenes over a floating Three.js clay scene (shield, coins, Telegram plane, spreadsheet), a scroll-pinned *Action Gap* story, a self-drawing loop diagram, a spotlight bento grid, live Scam Shield / Snap & Act demos, animated counters and a scroll-driven screenshot gallery (framer-motion + Lenis + React Three Fiber, honours *reduce motion*).
 
-Its centrepiece is a **one-minute cartoon product demo** built into the page: a video-style player with an **Indian male voiceover** (Sarvam Bulbul v3, pre-rendered per chapter and kept in sync with the playhead), play/pause, a scrubbable chapter timeline, captions and muted autoplay when in view. It animates the whole workflow — a suspicious payment, SAATHI calling Rahul through Sarvam + Vobiz, Claude choosing tools, the Telegram approval, Lakshmi's Google Sheet, the supplier tapping ACCEPT, Snap & Act catching an overcharge, and the audit trail verifying every step.
+A cartoon guide, **Saathi**, waves from the hero and then walks along the page margins as you scroll — new pose and one-line tip per section, stepping and leaning with real motion; close him with ✕ and he walks back home (remembered per browser).
 
-<img src="docs/screenshots/landing-demo.png" alt="Landing page — animated product demo" width="100%"/>
+The centrepiece is a **one-minute cartoon product demo** built into the page: a video-style player with an **Indian male voiceover** (Sarvam Bulbul v3, pre-rendered per chapter and kept in sync with the playhead), play/pause, a scrubbable chapter timeline, captions and muted autoplay when in view. It animates the whole workflow — a suspicious payment, SAATHI calling Rahul through Sarvam + Vobiz, Claude choosing tools, the Telegram approval, Lakshmi's Google Sheet, the supplier tapping ACCEPT, Snap & Act catching an overcharge, and the audit trail verifying every step.
 
-<img src="docs/screenshots/landing-wow.png" alt="Landing page — Scam Shield and Snap & Act demos" width="100%"/>
+<img src="docs/screens/landing-demo.png" alt="Landing page — animated product demo" width="100%"/>
+
+<img src="docs/screens/landing-wow.png" alt="Landing page — Scam Shield and Snap & Act demos" width="100%"/>
 
 ### Two surfaces
 
@@ -110,15 +112,15 @@ SAATHI has a **landing page** (`/`), a **user app** for real people (`/app`) and
 
 <table>
 <tr>
-<td width="25%"><img src="docs/screenshots/app-login.png" alt="Login"/><br/><sub><b>Login</b> — two demo accounts</sub></td>
-<td width="25%"><img src="docs/screenshots/app-rahul-home.png" alt="Rahul home"/><br/><sub><b>Rahul</b> — balance, alerts, payments</sub></td>
-<td width="25%"><img src="docs/screenshots/app-rahul-call.png" alt="Incoming safety call"/><br/><sub><b>“SAATHI is calling”</b> — fraud check in Kannada</sub></td>
-<td width="25%"><img src="docs/screenshots/app-rahul-activity.png" alt="What SAATHI did"/><br/><sub><b>Activity</b> — what SAATHI did, verified</sub></td>
+<td width="25%"><img src="docs/screens/app-login.png" alt="Login"/><br/><sub><b>Login</b> — two demo accounts</sub></td>
+<td width="25%"><img src="docs/screens/app-rahul-home.png" alt="Rahul home"/><br/><sub><b>Rahul</b> — balance, alerts, payments</sub></td>
+<td width="25%"><img src="docs/screens/app-rahul-call.png" alt="Incoming safety call"/><br/><sub><b>“SAATHI is calling”</b> — fraud check in Kannada</sub></td>
+<td width="25%"><img src="docs/screens/app-rahul-activity.png" alt="What SAATHI did"/><br/><sub><b>Activity</b> — what SAATHI did, verified</sub></td>
 </tr>
 <tr>
-<td><img src="docs/screenshots/app-lakshmi-home.png" alt="Lakshmi home"/><br/><sub><b>Lakshmi</b> — sales, cash, stock, dues</sub></td>
-<td><img src="docs/screenshots/app-lakshmi-approval.png" alt="Approval card"/><br/><sub><b>Kanglish reply + approval card</b></sub></td>
-<td colspan="2"><img src="docs/screenshots/live-call.png" alt="Live call in Control Room"/><br/><sub><b>Control Room — live AI call</b> with transcript, risk and current step</sub></td>
+<td><img src="docs/screens/app-lakshmi-home.png" alt="Lakshmi home"/><br/><sub><b>Lakshmi</b> — sales, cash, stock, dues</sub></td>
+<td><img src="docs/screens/app-lakshmi-approval.png" alt="Approval card"/><br/><sub><b>Kanglish reply + approval card</b></sub></td>
+<td colspan="2"><img src="docs/screens/live-call.png" alt="Live call in Control Room"/><br/><sub><b>Control Room — live AI call</b> with transcript, risk and current step</sub></td>
 </tr>
 </table>
 
@@ -126,27 +128,27 @@ SAATHI has a **landing page** (`/`), a **user app** for real people (`/app`) and
 
 <table>
 <tr>
-<td width="25%"><img src="docs/screenshots/app-shield-scam.png" alt="Scam Shield warning"/><br/><sub><b>Scam Shield</b> — live risk 98/100, Kannada warning, red flags, Claude's reason</sub></td>
-<td width="25%"><img src="docs/screenshots/app-shield-actions.png" alt="Scam Shield actions"/><br/><sub><b>Protect yourself</b> — report · alert family · block (each needs OK)</sub></td>
-<td width="25%"><img src="docs/screenshots/app-snap-bill.png" alt="Snap and act bill"/><br/><sub><b>Snap & Act</b> — bill photo → ₹200 overcharge caught</sub></td>
-<td width="25%"><img src="docs/screenshots/app-shield-card.png" alt="Rahul home with Scam Shield"/><br/><sub><b>Rahul's home</b> — Scam Shield entry points</sub></td>
+<td width="25%"><img src="docs/screens/app-shield-scam.png" alt="Scam Shield warning"/><br/><sub><b>Scam Shield</b> — live risk 98/100, Kannada warning, red flags, Claude's reason</sub></td>
+<td width="25%"><img src="docs/screens/app-shield-actions.png" alt="Scam Shield actions"/><br/><sub><b>Protect yourself</b> — report · alert family · block (each needs OK)</sub></td>
+<td width="25%"><img src="docs/screens/app-snap-bill.png" alt="Snap and act bill"/><br/><sub><b>Snap & Act</b> — bill photo → ₹200 overcharge caught</sub></td>
+<td width="25%"><img src="docs/screens/app-shield-card.png" alt="Rahul home with Scam Shield"/><br/><sub><b>Rahul's home</b> — Scam Shield entry points</sub></td>
 </tr>
 </table>
 
 | | |
 |---|---|
-| <img src="docs/screenshots/control-scam-shield.png" alt="Control room scam shield"/><br/>**Scam Shield (Control Room)** — risk meter, rules vs Claude, live transcript, red flags with the exact words heard | <img src="docs/screenshots/control-snap.png" alt="Control room snap and act"/><br/>**Snap & Act (Control Room)** — drop a photo, see what was read, what doesn't match, and the approvals |
+| <img src="docs/screens/control-scam-shield.png" alt="Control room scam shield"/><br/>**Scam Shield (Control Room)** — risk meter, rules vs Claude, live transcript, red flags with the exact words heard | <img src="docs/screens/control-snap.png" alt="Control room snap and act"/><br/>**Snap & Act (Control Room)** — drop a photo, see what was read, what doesn't match, and the approvals |
 
 ### Control Room
 
-<img src="docs/screenshots/control-room-fraud.png" alt="SAATHI Control Room during a live fraud check" width="100%"/>
+<img src="docs/screens/control-room-fraud.png" alt="SAATHI Control Room during a live fraud check" width="100%"/>
 
 | | |
 |---|---|
-| <img src="docs/screenshots/action-trace.png" alt="Action trace"/><br/>**Action Trace** — said → understood → data → decided → approval → tool → action → verified | <img src="docs/screenshots/merchant-health.png" alt="Merchant health"/><br/>**Merchant Health** — “Aaj business hegide?” answered with priorities |
-| <img src="docs/screenshots/telegram-purchase-order.png" alt="Telegram purchase order"/><br/>**Inventory + Telegram purchase order** with ACCEPT / REJECT / COUNTER | <img src="docs/screenshots/financial-radar.png" alt="Financial radar"/><br/>**Financial Radar** — found · why it matters · recommendation · action |
-| <img src="docs/screenshots/campaigns.png" alt="Campaigns"/><br/>**Campaigns** — detect → create → publish → measure | <img src="docs/screenshots/ai-agents.png" alt="AI agents"/><br/>**AI Agents** — six specialists and 52 tools |
-| <img src="docs/screenshots/activity-log.png" alt="Activity log"/><br/>**Audit trail** — every decision explainable | <img src="docs/screenshots/impact.png" alt="Impact"/><br/>**Impact screen** — 24/24 outcomes verified against stored data |
+| <img src="docs/screens/action-trace.png" alt="Action trace"/><br/>**Action Trace** — said → understood → data → decided → approval → tool → action → verified | <img src="docs/screens/merchant-health.png" alt="Merchant health"/><br/>**Merchant Health** — “Aaj business hegide?” answered with priorities |
+| <img src="docs/screens/telegram-purchase-order.png" alt="Telegram purchase order"/><br/>**Inventory + Telegram purchase order** with ACCEPT / REJECT / COUNTER | <img src="docs/screens/financial-radar.png" alt="Financial radar"/><br/>**Financial Radar** — found · why it matters · recommendation · action |
+| <img src="docs/screens/campaigns.png" alt="Campaigns"/><br/>**Campaigns** — detect → create → publish → measure | <img src="docs/screens/ai-agents.png" alt="AI agents"/><br/>**AI Agents** — six specialists and 52 tools |
+| <img src="docs/screens/activity-log.png" alt="Activity log"/><br/>**Audit trail** — every decision explainable | <img src="docs/screens/impact.png" alt="Impact"/><br/>**Impact screen** — 24/24 outcomes verified against stored data |
 
 > Screenshots were captured in sandbox mode (Telegram, Vobiz and Sheets switched to their dashboard fallbacks; Claude and Sarvam live).
 

@@ -160,3 +160,14 @@ html.lenis, html.lenis body { height: auto; }
 .dv-glow { transform-box: fill-box; transform-origin: center; animation: dvGlow 1.4s ease-in-out infinite; }
 .dv-paused .dv-dash, .dv-paused .dv-talk, .dv-paused .eq-bar, .dv-paused .ring-wave, .dv-paused .ring-shake, .dv-paused .dv-bob { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) { .dv-blink, .dv-dash, .dv-bob, .dv-cloud, .dv-glow { animation: none !important; } }
+
+/* ── landing: Saathi guide character ── */
+@keyframes gdWave { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-24deg); } }
+.gd-wave { animation: gdWave .55s ease-in-out infinite; }
+@keyframes gdStep { 0%, 100% { transform: rotate(24deg); } 50% { transform: rotate(-24deg); } }
+.gd-step-a { animation: gdStep .4s ease-in-out infinite; }
+.gd-step-b { animation: gdStep .4s ease-in-out infinite reverse; }
+@keyframes gdBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.gd-bob { animation: gdBob 2.8s ease-in-out infinite; }
+.gd-run { animation: gdBob .2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .gd-wave, .gd-step-a, .gd-step-b, .gd-bob, .gd-run { animation: none !important; } }
