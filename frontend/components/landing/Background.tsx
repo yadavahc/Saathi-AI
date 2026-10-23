@@ -31,6 +31,9 @@ export function Background() {
       }));
     }
     function frame() {
+      // keep the hero plain: confetti fades in only after the first screen
+      const vh = window.innerHeight;
+      c!.style.opacity = String(Math.min(1, Math.max(0, (window.scrollY - vh * 0.45) / (vh * 0.4))));
       ctx.clearRect(0, 0, w, h);
       for (const p of pts) {
         const dx = p.x - mouse.x, dy = p.y - mouse.y, d = Math.hypot(dx, dy) || 1;

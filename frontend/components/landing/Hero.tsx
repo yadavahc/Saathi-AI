@@ -1,11 +1,9 @@
 "use client";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, PlayCircle } from "lucide-react";
-import dynamic from "next/dynamic";
 import { useRef } from "react";
 import { MagneticButton } from "./ui";
 
-const ClayScene = dynamic(() => import("./ClayScene"), { ssr: false, loading: () => null });
 const WORD = "SAATHI";
 
 export function Hero() {
@@ -14,11 +12,9 @@ export function Hero() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const textY = useTransform(scrollYProgress, [0, 1], [0, -90]);
   const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const sceneY = useTransform(scrollYProgress, [0, 1], [0, 120]);
 
   return (
     <section ref={ref} id="top" className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-5 pb-20 pt-28">
-      <motion.div style={{ y: sceneY }} className="pointer-events-none absolute inset-0">{!reduce && <ClayScene wide />}</motion.div>
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[820px] max-w-[95vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(167,243,208,.55),rgba(253,230,138,.25),transparent)] blur-2xl" />
 
       <motion.div style={{ y: textY, opacity: fade }} className="relative z-10 mx-auto max-w-4xl text-center">
