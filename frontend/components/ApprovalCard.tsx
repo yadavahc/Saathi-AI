@@ -9,7 +9,7 @@ export default function ApprovalCard({ a, onApprove, onReject }: { a: any; onApp
   const pending = a.status === "PENDING";
   const act = async (fn: (id: string) => void) => { setBusy(true); try { await fn(a.approval_id); } finally { setBusy(false); } };
   return (
-    <div className={`rounded-xl border p-3.5 animate-slideUp ${pending ? "border-amber-400/30 bg-amber-400/[0.05]" : "border-white/[0.06] bg-white/[0.02]"}`}>
+    <div className={`rounded-xl border p-3.5 animate-slideUp ${pending ? "border-amber-200 bg-amber-50" : "border-slate-200 bg-slate-50"}`}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge tone="slate">{a.action.replace(/_/g, " ")}</Badge>
@@ -17,14 +17,14 @@ export default function ApprovalCard({ a, onApprove, onReject }: { a: any; onApp
         </div>
         <Status value={a.status} />
       </div>
-      <div className="mt-2 text-[13.5px] font-semibold leading-snug text-white">{a.description}</div>
+      <div className="mt-2 text-[13.5px] font-semibold leading-snug text-slate-900">{a.description}</div>
       <div className="mt-2 grid grid-cols-2 gap-2 text-[11.5px]">
         {a.amount != null && <div><span className="text-slate-500">Amount</span><div className="font-semibold tabular-nums">{inr(a.amount)}</div></div>}
         {a.target && <div><span className="text-slate-500">Target</span><div className="truncate font-semibold">{a.target}</div></div>}
-        {a.impact && <div className="col-span-2"><span className="text-slate-500">Impact</span><div className="text-slate-200">{a.impact}</div></div>}
-        {a.reason && <div className="col-span-2"><span className="text-slate-500">Reason</span><div className="text-slate-300">{a.reason}</div></div>}
+        {a.impact && <div className="col-span-2"><span className="text-slate-500">Impact</span><div className="text-slate-700">{a.impact}</div></div>}
+        {a.reason && <div className="col-span-2"><span className="text-slate-500">Reason</span><div className="text-slate-600">{a.reason}</div></div>}
       </div>
-      {a.result?.summary && <div className="mt-2 rounded-lg bg-black/25 px-2.5 py-2 text-[12px] text-emerald-200">{a.result.summary}</div>}
+      {a.result?.summary && <div className="mt-2 rounded-lg bg-slate-50 px-2.5 py-2 text-[12px] text-emerald-700">{a.result.summary}</div>}
       <div className="mt-2.5 flex items-center justify-between">
         <span className="text-[10.5px] text-slate-500">{AGENT_LABEL[a.agent] || a.agent} · {a.approval_id} · {time(a.created_at)}</span>
         {pending && (

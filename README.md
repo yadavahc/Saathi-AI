@@ -14,7 +14,7 @@
 ![Telegram](https://img.shields.io/badge/Telegram-action%20layer-26A5E4?logo=telegram&logoColor=white)
 ![Google Sheets](https://img.shields.io/badge/Google%20Sheets-data-34A853?logo=googlesheets&logoColor=white)
 
-<img src="docs/screenshots/control-room-fraud.png" alt="SAATHI Control Room during a live fraud check" width="100%"/>
+<img src="docs/screenshots/landing-hero.png" alt="SAATHI landing page" width="100%"/>
 
 </div>
 
@@ -94,9 +94,19 @@ Two users run through the whole product:
 
 ## 3. Screenshots
 
+### Landing page
+
+A bright, claymorphic front door at `/` — word-by-word headline reveal, a phone mockup cycling through live SAATHI scenes over a floating Three.js clay scene (shield, coins, Telegram plane, spreadsheet), a scroll-pinned *Action Gap* story, a self-drawing loop diagram, a spotlight bento grid, live Scam Shield / Snap & Act demos, animated counters and a scroll-driven screenshot gallery (framer-motion + Lenis + React Three Fiber, honours *reduce motion*).
+
+Its centrepiece is a **one-minute cartoon product demo** built into the page: a video-style player with an **Indian male voiceover** (Sarvam Bulbul v3, pre-rendered per chapter and kept in sync with the playhead), play/pause, a scrubbable chapter timeline, captions and muted autoplay when in view. It animates the whole workflow — a suspicious payment, SAATHI calling Rahul through Sarvam + Vobiz, Claude choosing tools, the Telegram approval, Lakshmi's Google Sheet, the supplier tapping ACCEPT, Snap & Act catching an overcharge, and the audit trail verifying every step.
+
+<img src="docs/screenshots/landing-demo.png" alt="Landing page — animated product demo" width="100%"/>
+
+<img src="docs/screenshots/landing-wow.png" alt="Landing page — Scam Shield and Snap & Act demos" width="100%"/>
+
 ### Two surfaces
 
-SAATHI has a **user app** for real people and a **Control Room** for judges and operators that exposes every decision.
+SAATHI has a **landing page** (`/`), a **user app** for real people (`/app`) and a **Control Room** for judges and operators that exposes every decision (`/console`).
 
 <table>
 <tr>
@@ -128,6 +138,8 @@ SAATHI has a **user app** for real people and a **Control Room** for judges and 
 | <img src="docs/screenshots/control-scam-shield.png" alt="Control room scam shield"/><br/>**Scam Shield (Control Room)** — risk meter, rules vs Claude, live transcript, red flags with the exact words heard | <img src="docs/screenshots/control-snap.png" alt="Control room snap and act"/><br/>**Snap & Act (Control Room)** — drop a photo, see what was read, what doesn't match, and the approvals |
 
 ### Control Room
+
+<img src="docs/screenshots/control-room-fraud.png" alt="SAATHI Control Room during a live fraud check" width="100%"/>
 
 | | |
 |---|---|
@@ -564,7 +576,7 @@ erDiagram
 
 | Layer | Technology |
 |---|---|
-| Frontend | Next.js 14, React 18, Tailwind CSS, Recharts, lucide-react |
+| Frontend | Next.js 14, React 18, Tailwind CSS, Recharts, framer-motion, Lenis, Three.js (React Three Fiber + drei), lucide-react |
 | Backend | Python, FastAPI, Pydantic |
 | AI | Claude API (structured outputs), Sarvam AI |
 | Voice | Sarvam (STT/TTS), Vobiz (telephony) |
@@ -583,7 +595,8 @@ backend/
   demo/          START LIVE DEMO runner + verified impact checklist
   main.py
 frontend/
-  app/           / (Control Room) and /app (user app)
+  app/           / (landing page), /console (Control Room), /app (user app)
+  components/landing/  landing page sections, cartoon demo player, 3D clay scene
   components/    Action Trace, Live Agent Flow, Live Call, Console, user app components
   dashboard/     13 Control Room views
   hooks/ services/
@@ -631,7 +644,8 @@ cd frontend && npm run dev
 
 | URL | What |
 |---|---|
-| http://localhost:3000 | Control Room |
+| http://localhost:3000 | Landing page |
+| http://localhost:3000/console | Control Room |
 | http://localhost:3000/app | User app (Rahul / Lakshmi) |
 | http://localhost:8000/docs | Interactive API docs |
 

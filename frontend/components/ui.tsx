@@ -9,9 +9,9 @@ export function Panel({ title, icon, right, children, className, bodyClass }: {
     <section className={clsx("panel", className)}>
       {title && (
         <header className="panel-head">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-100">
-            {icon && <span className="text-brand-400">{icon}</span>}
-            {title}
+          <div className="flex min-w-0 items-center gap-2.5 text-[14px] font-semibold text-slate-900">
+            {icon && <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">{icon}</span>}
+            <span className="min-w-0">{title}</span>
           </div>
           {right}
         </header>
@@ -22,12 +22,12 @@ export function Panel({ title, icon, right, children, className, bodyClass }: {
 }
 
 const TONES: Record<string, string> = {
-  green: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
-  amber: "border-amber-400/30 bg-amber-400/10 text-amber-300",
-  red: "border-rose-400/30 bg-rose-400/10 text-rose-300",
-  blue: "border-sky-400/30 bg-sky-400/10 text-sky-300",
-  violet: "border-violet-400/30 bg-violet-400/10 text-violet-300",
-  slate: "border-slate-400/20 bg-slate-400/10 text-slate-300",
+  green: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  amber: "border-amber-200 bg-amber-50 text-amber-700",
+  red: "border-rose-200 bg-rose-50 text-rose-700",
+  blue: "border-sky-200 bg-sky-50 text-sky-700",
+  violet: "border-violet-200 bg-violet-50 text-violet-700",
+  slate: "border-slate-200 bg-slate-50 text-slate-600",
 };
 
 export function Badge({ tone = "slate", children, className }: { tone?: keyof typeof TONES | string; children: ReactNode; className?: string }) {
@@ -43,7 +43,13 @@ export function statusTone(status?: string): string {
 }
 
 export function Status({ value }: { value?: string }) {
-  return <Badge tone={statusTone(value)}>{(value || "—").replace(/_/g, " ")}</Badge>;
+  const tone = statusTone(value);
+  return (
+    <Badge tone={tone}>
+      <span className={clsx("h-1.5 w-1.5 rounded-full", tone === "green" ? "bg-emerald-500" : tone === "amber" ? "bg-amber-500 live-dot" : tone === "red" ? "bg-rose-500" : "bg-slate-400")} />
+      {(value || "—").replace(/_/g, " ")}
+    </Badge>
+  );
 }
 
 export function SimTag() {
@@ -51,14 +57,14 @@ export function SimTag() {
 }
 
 export function Empty({ children }: { children: ReactNode }) {
-  return <div className="rounded-xl border border-dashed border-white/10 p-6 text-center text-sm text-slate-500">{children}</div>;
+  return <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/60 p-6 text-center text-sm text-slate-500">{children}</div>;
 }
 
 export function KV({ label, value, tone }: { label: string; value: ReactNode; tone?: string }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3">
+    <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 px-4 py-3.5">
       <div className="label">{label}</div>
-      <div className={clsx("mt-1 text-lg font-semibold tabular-nums", tone === "red" && "text-rose-300", tone === "green" && "text-emerald-300", tone === "amber" && "text-amber-300")}>{value}</div>
+      <div className={clsx("mt-1.5 text-lg font-semibold tabular-nums text-slate-900", tone === "red" && "!text-rose-600", tone === "green" && "!text-emerald-600", tone === "amber" && "!text-amber-600")}>{value}</div>
     </div>
   );
 }

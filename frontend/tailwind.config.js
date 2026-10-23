@@ -11,16 +11,22 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui"],
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular"],
+        display: ["var(--font-display)", "var(--font-sans)", "ui-sans-serif"],
       },
       keyframes: {
         pulseRing: { "0%": { boxShadow: "0 0 0 0 rgba(63,208,166,.55)" }, "100%": { boxShadow: "0 0 0 14px rgba(63,208,166,0)" } },
         slideUp: { "0%": { opacity: 0, transform: "translateY(8px)" }, "100%": { opacity: 1, transform: "translateY(0)" } },
         flow: { "0%": { backgroundPosition: "0% 50%" }, "100%": { backgroundPosition: "200% 50%" } },
+        marquee: { "0%": { transform: "translateX(0)" }, "100%": { transform: "translateX(-100%)" } },
+        marqueeRev: { "0%": { transform: "translateX(-100%)" }, "100%": { transform: "translateX(0)" } },
       },
       animation: {
         pulseRing: "pulseRing 1.4s ease-out infinite",
         slideUp: "slideUp .35s ease-out both",
         flow: "flow 2.2s linear infinite",
+        marquee: "marquee 38s linear infinite",
+        "marquee-rev": "marqueeRev 44s linear infinite",
+        "spin-slow": "spin 18s linear infinite",
       },
     },
   },

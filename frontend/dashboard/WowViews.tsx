@@ -11,9 +11,9 @@ import { time } from "@/services/format";
 import type { Ctx } from "./types";
 
 const VERDICT = {
-  SAFE: { text: "text-emerald-300", bar: "bg-emerald-400", border: "border-emerald-400/30" },
-  SUSPICIOUS: { text: "text-amber-300", bar: "bg-amber-400", border: "border-amber-400/40" },
-  SCAM: { text: "text-rose-300", bar: "bg-rose-500", border: "border-rose-400/50" },
+  SAFE: { text: "text-emerald-700", bar: "bg-emerald-400", border: "border-emerald-200" },
+  SUSPICIOUS: { text: "text-amber-700", bar: "bg-amber-400", border: "border-amber-300" },
+  SCAM: { text: "text-rose-600", bar: "bg-rose-500", border: "border-rose-300" },
 } as const;
 
 export function ShieldView(ctx: Ctx) {
@@ -48,13 +48,13 @@ export function ShieldView(ctx: Ctx) {
         ) : (
           <div className="grid gap-4 xl:grid-cols-[320px_1fr]">
             <div className="space-y-3">
-              <div className={clsx("rounded-2xl border bg-black/20 p-4", v.border)}>
+              <div className={clsx("rounded-2xl border bg-slate-50 p-4", v.border)}>
                 <div className="flex items-center justify-between">
                   <span className="label">Risk</span>
                   <Badge tone={s.verdict === "SCAM" ? "red" : s.verdict === "SUSPICIOUS" ? "amber" : "green"}>{s.verdict}</Badge>
                 </div>
                 <div className={clsx("mt-1 text-5xl font-black tabular-nums", v.text)}>{s.risk}<span className="text-lg text-slate-500">/100</span></div>
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
                   <div className={clsx("h-full rounded-full transition-all duration-700", v.bar)} style={{ width: `${s.risk}%` }} />
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-2 text-[12px]">
@@ -63,7 +63,7 @@ export function ShieldView(ctx: Ctx) {
                   <div><div className="label !text-[9.5px]">Caller</div><div className="font-semibold">{s.caller}</div></div>
                   <div><div className="label !text-[9.5px]">Source</div><div className="font-semibold capitalize">{s.source}{s.stream ? ` · ${s.stream}` : ""}</div></div>
                 </div>
-                {s.source === "mic" && live && <div className="mt-2 text-[11.5px] text-slate-400">{mic.error || `${mic.heard} clips transcribed`}</div>}
+                {s.source === "mic" && live && <div className="mt-2 text-[11.5px] text-slate-500">{mic.error || `${mic.heard} clips transcribed`}</div>}
                 {live && (
                   <button className="btn-ghost mt-3 w-full !py-1.5 !text-xs" onClick={async () => { await api.shieldEnd(s.session_id); ctx.refresh(); }}>
                     <Square size={12} /> Stop listening
@@ -71,39 +71,39 @@ export function ShieldView(ctx: Ctx) {
                 )}
               </div>
               {s.ai && (
-                <div className="rounded-2xl border border-violet-400/20 bg-violet-400/[0.05] p-4 text-[12.5px]">
-                  <div className="label mb-1 !text-violet-300">Claude's read · {s.ai.scam_type.replace(/_/g, " ")}</div>
-                  <p className="text-slate-200">{s.ai.explanation}</p>
-                  <p className="mt-2 font-semibold text-violet-200">→ {s.ai.advice}</p>
+                <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-[12.5px]">
+                  <div className="label mb-1 !text-violet-700">Claude's read · {s.ai.scam_type.replace(/_/g, " ")}</div>
+                  <p className="text-slate-700">{s.ai.explanation}</p>
+                  <p className="mt-2 font-semibold text-violet-700">→ {s.ai.advice}</p>
                 </div>
               )}
             </div>
             <div className="space-y-3">
               {s.warnings?.map((w: any, i: number) => (
-                <div key={i} className={clsx("animate-slideUp rounded-2xl p-3.5", w.level === "SCAM" ? "bg-rose-500/90 text-white" : "bg-amber-400/90 text-amber-950")}>
+                <div key={i} className={clsx("animate-slideUp rounded-2xl p-3.5", w.level === "SCAM" ? "bg-rose-500 text-white" : "bg-amber-400 text-amber-950")}>
                   <div className="text-[14px] font-bold">{w.text}</div>
                   <div className="text-[12.5px] opacity-85">{w.english} · spoken in Kannada{s.source === "phone" ? " into the call" : ""}</div>
                 </div>
               ))}
               <div className="grid gap-3 lg:grid-cols-2">
-                <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                   <div className="label mb-2">Live transcript</div>
                   <div className="max-h-[300px] space-y-1.5 overflow-y-auto pr-1">
                     {(s.transcript || []).map((t: any, i: number) => (
-                      <div key={i} className={clsx("animate-slideUp rounded-xl px-3 py-2 text-[12.5px]", t.speaker === "USER" ? "ml-6 bg-sky-500/15" : "mr-6 bg-white/[0.05]")}>
+                      <div key={i} className={clsx("animate-slideUp rounded-xl px-3 py-2 text-[12.5px]", t.speaker === "USER" ? "ml-6 bg-sky-100" : "mr-6 bg-slate-100")}>
                         <span className="mr-1.5 text-[10px] font-bold uppercase text-slate-500">{t.speaker === "USER" ? "Rahul" : "Caller"}</span>{t.text}
                       </div>
                     ))}
                     {!s.transcript?.length && <div className="text-[12px] text-slate-500">Waiting for audio…</div>}
                   </div>
                 </div>
-                <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                   <div className="label mb-2">Red flags (explainable rules)</div>
                   <div className="space-y-1.5">
                     {(s.signals || []).map((g: any) => (
-                      <div key={g.id} className="animate-slideUp rounded-xl bg-rose-500/[0.08] px-3 py-2 text-[12.5px]">
-                        <div className="flex items-center justify-between"><span className="font-semibold text-rose-200">🚩 {g.label}</span><span className="text-slate-500">+{g.weight}</span></div>
-                        <div className="text-[11.5px] text-slate-400">heard: “{g.match}”</div>
+                      <div key={g.id} className="animate-slideUp rounded-xl bg-rose-50 px-3 py-2 text-[12.5px]">
+                        <div className="flex items-center justify-between"><span className="font-semibold text-rose-600">🚩 {g.label}</span><span className="text-slate-500">+{g.weight}</span></div>
+                        <div className="text-[11.5px] text-slate-500">heard: “{g.match}”</div>
                       </div>
                     ))}
                     {!s.signals?.length && <div className="text-[12px] text-slate-500">No red flags yet.</div>}
@@ -122,8 +122,8 @@ export function ShieldView(ctx: Ctx) {
       {sessions.length > 1 && (
         <Panel title="Recent sessions">
           {sessions.slice(1).map((x: any) => (
-            <div key={x.session_id} className="flex items-center justify-between border-b border-white/[0.05] py-2 text-[12.5px] last:border-0">
-              <span className="font-mono text-slate-400">{x.session_id}</span>
+            <div key={x.session_id} className="flex items-center justify-between border-b border-slate-200 py-2 text-[12.5px] last:border-0">
+              <span className="font-mono text-slate-500">{x.session_id}</span>
               <span>{x.caller} · {x.source}</span>
               <span className="tabular-nums">{x.risk}/100</span>
               <Status value={x.verdict === "SAFE" ? "OK" : x.verdict === "SCAM" ? "HIGH" : "MEDIUM"} />
@@ -161,10 +161,10 @@ export function SnapView(ctx: Ctx) {
             onDrop={(e) => { e.preventDefault(); setDrag(false); e.dataTransfer.files[0] && upload(e.dataTransfer.files[0]); }}
             onClick={() => file.current?.click()}
             className={clsx("grid cursor-pointer place-items-center rounded-2xl border-2 border-dashed p-8 text-center transition",
-              drag ? "border-brand-400 bg-brand-400/10" : "border-white/10 hover:border-white/20")}>
+              drag ? "border-emerald-400 bg-emerald-50" : "border-slate-200 hover:border-slate-300")}>
             <input ref={file} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
             <div>
-              <Upload className="mx-auto text-slate-400" />
+              <Upload className="mx-auto text-slate-500" />
               <div className="mt-2 text-[14px] font-semibold">{busy === "upload" ? "Reading photo…" : "Drop a photo or click to upload"}</div>
               <div className="text-[12px] text-slate-500">Khata page · supplier bill · shelf. Also works by sending a photo to the Telegram bot.</div>
             </div>
@@ -174,10 +174,10 @@ export function SnapView(ctx: Ctx) {
             <div className="grid grid-cols-3 gap-3">
               {SAMPLES.map((s) => (
                 <button key={s.id} onClick={() => sample(s.id)} disabled={!!busy}
-                  className={clsx("overflow-hidden rounded-xl border text-left transition hover:border-white/20", busy === s.id ? "border-brand-400 ring-2 ring-brand-400/40" : "border-white/[0.08]")}>
+                  className={clsx("overflow-hidden rounded-xl border text-left transition hover:border-slate-300", busy === s.id ? "border-emerald-400 ring-2 ring-emerald-200" : "border-slate-200")}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={s.src} alt={s.label} className="h-28 w-full object-cover" />
-                  <div className="flex items-center justify-between px-2.5 py-2 text-[12px] font-semibold">{s.label}{busy === s.id && <span className="text-brand-300">reading…</span>}</div>
+                  <div className="flex items-center justify-between px-2.5 py-2 text-[12px] font-semibold">{s.label}{busy === s.id && <span className="text-emerald-700">reading…</span>}</div>
                 </button>
               ))}
             </div>
@@ -192,11 +192,11 @@ export function SnapView(ctx: Ctx) {
             right={<span className="flex items-center gap-2 text-[11px] text-slate-500">{time(d.created_at)} <Status value={d.status} /></span>}>
             <div className="grid gap-4 lg:grid-cols-[200px_1fr_1fr]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={d.image_url} alt="" className="max-h-56 w-full rounded-xl border border-white/[0.06] object-contain" />
+              <img src={d.image_url} alt="" className="max-h-56 w-full rounded-xl border border-slate-200 object-contain" />
               <div>
                 <div className="text-[14px] font-semibold">{d.reply}</div>
-                <div className="text-[12.5px] text-slate-400">{d.reply_en}</div>
-                <div className="mt-3 rounded-xl border border-white/[0.06] bg-black/20 p-3 text-slate-200"><DocFindings doc={d} dark /></div>
+                <div className="text-[12.5px] text-slate-500">{d.reply_en}</div>
+                <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-700"><DocFindings doc={d} dark /></div>
               </div>
               <div className="space-y-2">{approvals.map((a: any) => <ApprovalCard key={a.approval_id} a={a} onApprove={ctx.approve} onReject={ctx.reject} />)}</div>
             </div>

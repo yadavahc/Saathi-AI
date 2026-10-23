@@ -12,10 +12,10 @@ const AXIS = { stroke: "#64748b", fontSize: 11, tickLine: false, axisLine: false
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-white/10 bg-ink-900/95 px-3 py-2 text-[12px] shadow-xl">
-      <div className="mb-1 font-semibold text-slate-300">{label}</div>
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[12px] shadow-xl">
+      <div className="mb-1 font-semibold text-slate-600">{label}</div>
       {payload.map((p: any) => (
-        <div key={p.dataKey} className="flex items-center gap-2 text-slate-200">
+        <div key={p.dataKey} className="flex items-center gap-2 text-slate-700">
           <span className="h-2 w-2 rounded-sm" style={{ background: p.color }} />{p.name}<span className="ml-auto pl-3 font-semibold tabular-nums">{inr(p.value)}</span>
         </div>
       ))}
@@ -35,7 +35,7 @@ export function HealthView(ctx: Ctx) {
       <Panel title="Merchant Health — Lakshmi General Stores, Mysuru" icon={<Store size={15} />}
         right={<button className="btn-primary !py-1.5 !text-xs" onClick={() => ctx.ask("Aaj business hegide?", "merchant")}>🎙 “Aaj business hegide?”</button>}>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-          <KV label="Sales today" value={<>{inr(s.today)} <span className="text-xs text-emerald-300">{pct(s.growth_pct)}</span></>} />
+          <KV label="Sales today" value={<>{inr(s.today)} <span className="text-xs text-emerald-700">{pct(s.growth_pct)}</span></>} />
           <KV label="Previous" value={inr(s.yesterday)} />
           <KV label="Expenses" value={inr(expenses)} />
           <KV label="Cash variance" value={inr(d.cash?.variance)} tone={d.cash?.variance < 0 ? "red" : "green"} />
@@ -52,7 +52,7 @@ export function HealthView(ctx: Ctx) {
                   <linearGradient id="gTotal" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--series-1)" stopOpacity={0.35} /><stop offset="100%" stopColor="var(--series-1)" stopOpacity={0} /></linearGradient>
                   <linearGradient id="gEve" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--series-2)" stopOpacity={0.3} /><stop offset="100%" stopColor="var(--series-2)" stopOpacity={0} /></linearGradient>
                 </defs>
-                <CartesianGrid stroke="rgba(148,163,184,.08)" vertical={false} />
+                <CartesianGrid stroke="#e2e8f0" vertical={false} />
                 <XAxis dataKey="date" {...AXIS} />
                 <YAxis {...AXIS} width={52} tickFormatter={(v) => compactInr(v)} />
                 <Tooltip content={<ChartTooltip />} cursor={{ stroke: "rgba(148,163,184,.35)", strokeWidth: 1 }} />
@@ -82,8 +82,8 @@ export function HealthView(ctx: Ctx) {
 function Signal({ tone, title, body, cta, onClick }: { tone: string; title: string; body: string; cta?: string; onClick?: () => void }) {
   return (
     <div className={clsx("flex items-center justify-between gap-3 rounded-xl border p-3",
-      tone === "red" ? "border-rose-400/25 bg-rose-500/[0.05]" : tone === "amber" ? "border-amber-400/25 bg-amber-400/[0.04]" : "border-emerald-400/20 bg-emerald-400/[0.04]")}>
-      <div><div className="font-semibold text-white">{title}</div><div className="text-[12px] text-slate-400">{body}</div></div>
+      tone === "red" ? "border-rose-200 bg-rose-50" : tone === "amber" ? "border-amber-200 bg-amber-50" : "border-emerald-200 bg-emerald-50")}>
+      <div><div className="font-semibold text-slate-900">{title}</div><div className="text-[12px] text-slate-500">{body}</div></div>
       {cta && <button onClick={onClick} className="btn-ghost shrink-0 !py-1 !text-[11.5px]">{cta} →</button>}
     </div>
   );
@@ -101,7 +101,7 @@ export function CashView(ctx: Ctx) {
         <KV label="Variance" value={inr(c.variance)} tone={c.variance < 0 ? "red" : "green"} />
         <KV label="Status" value={<Status value={c.status} />} />
       </div>
-      <div className="mt-4 rounded-xl border border-white/[0.06] bg-black/20 p-4 font-mono text-[12.5px] text-slate-300">
+      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 font-mono text-[12.5px] text-slate-600">
         expected = sales {inr(ctx.data.sales.today)} − cash expenses {inr((ctx.data.expenses || []).reduce((a: number, e: any) => a + e.amount, 0))} = {inr(c.expected_cash)}<br />
         variance = actual {inr(c.actual_cash)} − expected {inr(c.expected_cash)} = {inr(c.variance)}
         <div className="mt-2 font-sans text-[11.5px] text-slate-500">All financial calculations run in backend code — never inside the LLM.</div>
@@ -109,7 +109,7 @@ export function CashView(ctx: Ctx) {
       {c.status === "RECONCILED" && (
         <div className="mt-3 grid grid-cols-2 gap-3 text-[12.5px] md:grid-cols-4">
           {[["Date", c.date], ["Reason", c.reason], ["Approved by", c.approved_by], ["Timestamp", time(c.timestamp)]].map(([k, v]) => (
-            <div key={k}><div className="label">{k}</div><div className="mt-0.5 text-slate-200">{v}</div></div>
+            <div key={k}><div className="label">{k}</div><div className="mt-0.5 text-slate-700">{v}</div></div>
           ))}
         </div>
       )}
@@ -130,10 +130,10 @@ export function InventoryView(ctx: Ctx) {
             const low = i.stock < i.min_stock;
             return (
               <tr key={i.sku} className="table-row">
-                <td className="py-2.5 font-semibold text-white">{i.item}</td>
+                <td className="py-2.5 font-semibold text-slate-900">{i.item}</td>
                 <td className="tabular-nums">{i.stock} {i.unit} <span className="text-slate-500">/ min {i.min_stock}</span></td>
                 <td className="w-40 pr-4">
-                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                  <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
                     <div className={clsx("h-full rounded-full", low ? "bg-rose-400" : "bg-emerald-400")} style={{ width: `${ratio * 100}%` }} />
                   </div>
                 </td>
@@ -159,9 +159,9 @@ export function CreditView(ctx: Ctx) {
         <tbody>
           {rows.map((c: any) => (
             <tr key={c.customer_id} className="table-row">
-              <td className="py-2.5 font-semibold text-white">{c.name}</td>
+              <td className="py-2.5 font-semibold text-slate-900">{c.name}</td>
               <td className="font-semibold tabular-nums">{inr(c.outstanding)}</td>
-              <td>{c.overdue_days ? <span className="text-rose-300">{c.overdue_days} days</span> : "—"}</td>
+              <td>{c.overdue_days ? <span className="text-rose-600">{c.overdue_days} days</span> : "—"}</td>
               <td>{c.reminders_sent}</td>
               <td><Status value={c.reminder_status || c.status} /></td>
               <td className="text-right">
@@ -172,9 +172,9 @@ export function CreditView(ctx: Ctx) {
         </tbody>
       </table>
       {rows.filter((c: any) => c.last_reminder_message).map((c: any) => (
-        <div key={c.customer_id} className="mt-3 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.04] p-3 text-[12.5px]">
-          <div className="label mb-1 !text-emerald-300/80">Reminder sent to {c.name} · {time(c.last_reminder_at)}</div>
-          <div className="whitespace-pre-wrap text-slate-200">{c.last_reminder_message}</div>
+        <div key={c.customer_id} className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-[12.5px]">
+          <div className="label mb-1 !text-emerald-700">Reminder sent to {c.name} · {time(c.last_reminder_at)}</div>
+          <div className="whitespace-pre-wrap text-slate-700">{c.last_reminder_message}</div>
         </div>
       ))}
     </Panel>
@@ -190,15 +190,15 @@ export function OrdersView(ctx: Ctx) {
         {orders.length === 0 ? <Empty>No orders yet.</Empty> : (
           <div className="grid gap-3 lg:grid-cols-2">
             {orders.map((o: any) => (
-              <div key={o.order_id} className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
+              <div key={o.order_id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <div className="flex items-center justify-between">
-                  <div><div className="font-mono text-[11px] text-slate-500">{o.type.replace(/_/g, " ")}</div><div className="text-[15px] font-bold text-white">{o.order_id} · {o.counterparty}</div></div>
+                  <div><div className="font-mono text-[11px] text-slate-500">{o.type.replace(/_/g, " ")}</div><div className="text-[15px] font-bold text-slate-900">{o.order_id} · {o.counterparty}</div></div>
                   <Status value={o.status} />
                 </div>
-                <div className="mt-2 text-[12.5px] text-slate-300">{o.items.map((i: any) => `${i.name} × ${i.quantity}${i.unit ? " " + i.unit : ""}`).join(", ")}</div>
+                <div className="mt-2 text-[12.5px] text-slate-600">{o.items.map((i: any) => `${i.name} × ${i.quantity}${i.unit ? " " + i.unit : ""}`).join(", ")}</div>
                 <div className="mt-1 flex gap-4 text-[12.5px]"><span>Total <b>{inr(o.amount)}</b></span><span>Delivery <b>{o.delivery}</b></span><SimTag /></div>
-                <div className="mt-3 space-y-1 border-l border-white/10 pl-3">
-                  {o.timeline.map((t: any, i: number) => <div key={i} className="text-[11.5px] text-slate-400"><span className="font-mono text-slate-500">{time(t.ts)}</span> · {t.event}</div>)}
+                <div className="mt-3 space-y-1 border-l border-slate-200 pl-3">
+                  {o.timeline.map((t: any, i: number) => <div key={i} className="text-[11.5px] text-slate-500"><span className="font-mono text-slate-500">{time(t.ts)}</span> · {t.event}</div>)}
                 </div>
               </div>
             ))}
@@ -208,8 +208,8 @@ export function OrdersView(ctx: Ctx) {
       <Panel title="Vendor catalog (commerce)">
         <div className="grid gap-3 md:grid-cols-3">
           {(ctx.data?.vendors || []).map((v: any) => (
-            <div key={v.merchant_id} className="rounded-xl border border-white/[0.06] p-3 text-[12.5px]">
-              <div className="font-semibold text-white">{v.name}</div>
+            <div key={v.merchant_id} className="rounded-xl border border-slate-200 p-3 text-[12.5px]">
+              <div className="font-semibold text-slate-900">{v.name}</div>
               <div className="text-slate-500">★ {v.rating} · {v.distance_km} km · {v.delivery}</div>
               {Object.entries(v.catalog).map(([k, c]: any) => <div key={k} className="mt-1 flex justify-between"><span className="capitalize">{k}</span><span>{inr(c.price)} · stock {c.stock}</span></div>)}
             </div>
@@ -227,10 +227,10 @@ export function CampaignsView(ctx: Ctx) {
       right={<button className="btn-primary !py-1.5 !text-xs" onClick={() => ctx.ask("Evening sales are down — suggest a campaign", "merchant")}>Find growth opportunity</button>}>
       <div className="grid gap-4 lg:grid-cols-2">
         {camps.map((c: any) => (
-          <div key={c.campaign_id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
+          <div key={c.campaign_id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <div className="flex items-start justify-between">
-              <div><div className="font-mono text-[11px] text-slate-500">{c.campaign_id}</div><div className="text-[16px] font-bold text-white">{c.name}</div>
-                <div className="text-[12.5px] text-slate-400">{c.offer} · {c.window}</div></div>
+              <div><div className="font-mono text-[11px] text-slate-500">{c.campaign_id}</div><div className="text-[16px] font-bold text-slate-900">{c.name}</div>
+                <div className="text-[12.5px] text-slate-500">{c.offer} · {c.window}</div></div>
               <Status value={c.status} />
             </div>
             {c.after_daily ? (
@@ -238,7 +238,7 @@ export function CampaignsView(ctx: Ctx) {
                 <div className="h-[150px]">
                   <ResponsiveContainer>
                     <BarChart data={[{ k: "Before", v: c.before_daily }, { k: "After", v: c.after_daily }]} margin={{ top: 18, right: 8, left: 0, bottom: 0 }} barCategoryGap="35%">
-                      <CartesianGrid stroke="rgba(148,163,184,.08)" vertical={false} />
+                      <CartesianGrid stroke="#e2e8f0" vertical={false} />
                       <XAxis dataKey="k" {...AXIS} />
                       <YAxis {...AXIS} width={48} tickFormatter={(v) => compactInr(v)} />
                       <Tooltip content={<ChartTooltip />} cursor={{ fill: "rgba(148,163,184,.06)" }} />
@@ -248,10 +248,10 @@ export function CampaignsView(ctx: Ctx) {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="mt-1 flex items-center gap-2 text-[13px]"><span className="text-xl font-black text-emerald-300">{pct(c.improvement_pct)}</span><span className="text-slate-400">improvement</span>{c.simulated && <SimTag />}</div>
+                <div className="mt-1 flex items-center gap-2 text-[13px]"><span className="text-xl font-black text-emerald-700">{pct(c.improvement_pct)}</span><span className="text-slate-500">improvement</span>{c.simulated && <SimTag />}</div>
               </div>
             ) : c.status === "LIVE" ? (
-              <div className="mt-3 flex items-center justify-between rounded-lg bg-black/20 p-3 text-[12.5px] text-slate-300">
+              <div className="mt-3 flex items-center justify-between rounded-lg bg-slate-50 p-3 text-[12.5px] text-slate-600">
                 Live — performance is being tracked…
                 <button className="btn-ghost !py-1 !text-[11.5px]" onClick={async () => { await api.measureCampaign(c.campaign_id); ctx.refresh(); }}>Measure now</button>
               </div>

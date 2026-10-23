@@ -17,14 +17,14 @@ export default function LiveAgentFlow({ run }: { run: any }) {
           <Fragment key={node}>
             <div className={clsx(
               "shrink-0 rounded-lg border px-2.5 py-1.5 text-[10px] font-bold tracking-wider transition-all duration-500",
-              done && "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
-              isActive && (waiting ? "border-amber-400/70 bg-amber-400/15 text-amber-200 animate-pulseRing" : "border-brand-400/80 bg-brand-400/20 text-brand-200 animate-pulseRing"),
-              !done && !isActive && "border-white/[0.07] text-slate-600",
+              done && "border-emerald-200 bg-emerald-50 text-emerald-700",
+              isActive && (waiting ? "border-amber-300 bg-amber-100 text-amber-700 animate-pulseRing" : "border-emerald-300 bg-emerald-100 text-emerald-700 animate-pulseRing"),
+              !done && !isActive && "border-slate-200 text-slate-400",
             )}>
               {node}
             </div>
             {i < NODES.length - 1 && (
-              <div className="relative mx-1 h-[2px] min-w-[14px] flex-1 overflow-hidden rounded bg-white/[0.06]">
+              <div className="relative mx-1 h-[2px] min-w-[14px] flex-1 overflow-hidden rounded bg-slate-100">
                 {i < active && <div className="absolute inset-0 flow-line" />}
               </div>
             )}

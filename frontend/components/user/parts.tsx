@@ -81,50 +81,62 @@ export function ApprovalTile({ a, onDone }: { a: any; onDone: () => void }) {
 /** Full-screen incoming call when SAATHI is verifying a payment with this user. */
 export function CallOverlay({ call, voiceOn, onChange }: { call: any; voiceOn: boolean; onChange: () => void }) {
   const [busy, setBusy] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
   const last = [...(call.transcript || [])].reverse().find((t: any) => t.speaker === "SAATHI");
   useEffect(() => { if (voiceOn && last?.audio_url) playAudio(last.audio_url); }, [last?.audio_url, voiceOn]);
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
   async function say(text: string) {
     setBusy(true);
     try { await api.respondCall(call.call_id, text); } finally { setBusy(false); onChange(); }
   }
   const verifying = call.step === "verify";
+  const secs = call.started_at ? Math.max(0, Math.floor((now - new Date(call.started_at).getTime()) / 1000)) : 0;
+  const timer = `${String(Math.floor(secs / 60)).padStart(2, "0")}:${String(secs % 60).padStart(2, "0")}`;
+  const decline = verifying ? { text: "No, I didn't make it", label: "No, it wasn't me" } : { text: "No", label: "Don't block" };
+  const accept = verifying ? { text: "Yes, it was me", label: "Yes, it was me" } : { text: "Yes, block it", label: "Block & report" };
   return (
-    <div className="fixed inset-0 z-50 mx-auto flex max-w-[440px] flex-col bg-gradient-to-b from-emerald-900 via-emerald-950 to-stone-950 px-6 pb-10 pt-16 text-white">
-      <div className="text-center">
-        <div className="mx-auto grid h-20 w-20 animate-pulse place-items-center rounded-full bg-white/10 ring-8 ring-white/5">
-          <ShieldAlert size={34} className="text-emerald-300" />
+    <div className="fixed inset-0 z-50 mx-auto flex max-w-[440px] flex-col overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-sky-50 px-6 pb-10 pt-12 text-stone-900">
+      <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-emerald-200/50 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-200/50 blur-3xl" />
+      <div className="relative text-center">
+        <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-emerald-700">SAATHI is calling</div>
+        <div className="mt-1 font-mono text-[14px] tabular-nums text-stone-500">{timer}</div>
+        <div className="relative mx-auto mt-8 grid h-36 w-36 place-items-center">
+          <span className="ring-wave absolute inset-0 rounded-full bg-emerald-300/50" />
+          <span className="ring-wave absolute inset-0 rounded-full bg-emerald-300/40" style={{ animationDelay: ".7s" }} />
+          <span className="ring-wave absolute inset-0 rounded-full bg-emerald-300/30" style={{ animationDelay: "1.4s" }} />
+          <div className="clay relative grid h-28 w-28 place-items-center !rounded-full bg-gradient-to-br from-emerald-400 to-teal-500">
+            <ShieldAlert size={44} className="text-white" />
+          </div>
         </div>
-        <div className="mt-5 text-[13px] font-semibold uppercase tracking-[0.18em] text-emerald-300">SAATHI is calling</div>
-        <div className="mt-1 text-[22px] font-bold">Payment safety check</div>
-        <div className="mt-1 text-[13px] text-white/60">{call.provider === "vobiz" ? "Also ringing your phone" : "In-app call"} · {call.language}</div>
+        <div className="mt-6 text-[24px] font-extrabold tracking-tight">Payment safety check</div>
+        <div className="mt-1 text-[13px] text-stone-500">{call.provider === "vobiz" ? "Also ringing your phone" : "In-app call"} · {call.language}</div>
+        <div className="mt-4 flex h-7 items-center justify-center gap-[3px]">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <span key={i} className="eq-bar w-[3px] rounded-full bg-emerald-500/80" style={{ height: `${30 + ((i * 37) % 70)}%`, animationDelay: `${(i % 6) * 0.1}s` }} />
+          ))}
+        </div>
       </div>
-      <div className="mt-10 rounded-3xl bg-white/[0.07] p-5 text-[17px] leading-relaxed">
+      <div className="clay-sm relative mt-6 p-5 text-[16.5px] leading-relaxed text-stone-800">
         {last?.text}
         {last?.audio_url && (
-          <button onClick={() => playAudio(last.audio_url, true)} className="mt-3 block text-[13px] font-semibold text-emerald-300">▶ Play again</button>
+          <button onClick={() => playAudio(last.audio_url, true)} className="mt-3 block text-[13px] font-semibold text-emerald-700">▶ Play again</button>
         )}
       </div>
-      <div className="mt-auto space-y-3">
-        {verifying ? (
-          <>
-            <button disabled={busy} onClick={() => say("No, I didn't make it")} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-rose-500 py-4 text-[16px] font-bold active:scale-[.98]">
-              <PhoneOff size={18} /> No, it wasn't me
-            </button>
-            <button disabled={busy} onClick={() => say("Yes, it was me")} className="w-full rounded-2xl bg-white/10 py-4 text-[16px] font-semibold active:scale-[.98]">
-              Yes, I made this payment
-            </button>
-          </>
-        ) : (
-          <>
-            <button disabled={busy} onClick={() => say("Yes, block it")} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 py-4 text-[16px] font-bold text-emerald-950 active:scale-[.98]">
-              <Phone size={18} /> Yes, block it & report
-            </button>
-            <button disabled={busy} onClick={() => say("No")} className="w-full rounded-2xl bg-white/10 py-4 text-[16px] font-semibold active:scale-[.98]">
-              Don't block
-            </button>
-          </>
-        )}
-        <div className="text-center text-[12px] text-white/50">SAATHI will never ask for your OTP, PIN or CVV.</div>
+      <div className="relative mt-auto">
+        <div className="flex items-start justify-around">
+          <button disabled={busy} onClick={() => say(decline.text)} className="group flex flex-col items-center gap-2">
+            <span className="grid h-[72px] w-[72px] place-items-center rounded-full bg-rose-500 text-white shadow-xl shadow-rose-500/30 transition group-active:scale-95"><PhoneOff size={28} /></span>
+            <span className="text-[13px] font-semibold text-stone-700">{decline.label}</span>
+          </button>
+          <button disabled={busy} onClick={() => say(accept.text)} className="group flex flex-col items-center gap-2">
+            <span className="relative grid h-[72px] w-[72px] place-items-center rounded-full bg-emerald-500 text-white shadow-xl shadow-emerald-500/30 transition group-active:scale-95">
+              <span className="ring-wave absolute inset-0 rounded-full bg-emerald-400/50" /><Phone size={28} className="ring-shake relative" />
+            </span>
+            <span className="text-[13px] font-semibold text-stone-700">{accept.label}</span>
+          </button>
+        </div>
+        <div className="mt-6 text-center text-[12px] text-stone-500">SAATHI will never ask for your OTP, PIN or CVV.</div>
       </div>
     </div>
   );
